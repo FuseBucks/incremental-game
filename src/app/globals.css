@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-body{
-    font-family: Tahoma;
-    background-color: #222222;
+body {
+  font-family: Tahoma;
+  background-color: #222222;
 }
 
 button {
@@ -24,7 +24,6 @@ button:active {
     inset 1px 1px 2px #b5b5b5,
     1px 1px 2px #b5b5b5;
 }
-
 
 .tab-internal {
   display: flex;
