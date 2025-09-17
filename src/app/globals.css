@@ -37,6 +37,7 @@ button:active {
 }
 
 .tab {
+  position: fixed;
   background: linear-gradient(to bottom, #1863c2 0%, #3a8be4 100%);
   color: #fff;
   font-family: Tahoma, Verdana, Segoe, sans-serif;
