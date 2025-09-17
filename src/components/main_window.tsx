@@ -1,46 +1,101 @@
 // read commit message for more context on the structuring
 
 "use client";
+import React, { useState } from "react";
 import { useButton } from "../hooks/buttonHook";
 
+
+
 export function MainWindow() {
+  
   // use custom hook to manage button states, para malinis
   const { virusCount, dataCount, virusCost, canBuyVirus, handleDataClick, handleVirusClick } =
     useButton();
+  const [windows, setWindows] = useState([
+    { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
+    { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
+    
+  ]);
+
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+
+  function handleMouseDown(id: string, e: React.MouseEvent) {
+    setDraggingId(id);
+    setLastMouse({ x: e.clientX, y: e.clientY });
+    e.preventDefault();
+    }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!draggingId) return;
+    const dx = e.clientX - lastMouse.x;
+    const dy = e.clientY - lastMouse.y;
+
+    setWindows(ws =>
+      ws.map(w =>
+        w.id === draggingId ? { ...w, x: w.x + dx, y: w.y + dy } : w
+      )
+    );
+
+    setLastMouse({ x: e.clientX, y: e.clientY });
+  }
+
+  function handleMouseUp() {
+    setDraggingId(null);
+  }
 
   return (
     <>
-      {/* resource board */}
-      <div className="tab absolute top-20 ml-4 h-auto w-65">
-        <div className="font-sans">Resources</div>
-        <div className="tab-internal w-63 h-20">
-          <div className="m-2">
-            <p>Virus: {virusCount}</p>
-            <p>Data: {dataCount}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* action btn */}
-      <div className="tab">
-        {" "}
-        Virus (C:)
-        <div className="tab-internal w-75 h-45"> 
-          <div className="flex gap-4">
-            <button onClick={handleDataClick}>Data</button>
-            <button 
-              onClick={handleVirusClick}
-              disabled={!canBuyVirus}
-              className={`relative group ${!canBuyVirus ? "opacity-50 cursor-not-allowed" : ""}`}
+      <div
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        style={{ position: "relative", width: "100vw", height: "100vh" }}
+      >
+        {windows.map(w => (
+          <div
+            key={w.id}
+            className="tab"
+            style={{
+              position: "absolute",
+              top: w.y,
+              left: w.x,
+              cursor: draggingId === w.id ? "grabbing" : "grab"
+            }}
+            onMouseDown={e => handleMouseDown(w.id, e)}
+          >
+            <div className="font-sans">{w.title}</div>
+            <div
+              className="tab-internal"
+              style={{ width: w.w, height: w.h }}
             >
-              Virus
-              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                Cost: {virusCost} Data
-              </span>
-            </button>
+              {w.id === "resources" && (
+                <div className="m-2">
+                  <p>Virus: {virusCount}</p>
+                  <p>Data: {dataCount}</p>
+                </div>
+              )}
+              {w.id === "virus" && (
+                <div className="flex gap-4">
+                  <button onClick={handleDataClick}>Data</button>
+                  <button
+                    onClick={handleVirusClick}
+                    disabled={!canBuyVirus}
+                    className={`relative group ${
+                      !canBuyVirus ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    Virus
+                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Cost: {virusCost} Data
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
+    
   );
 }
