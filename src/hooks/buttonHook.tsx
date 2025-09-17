@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from "react";
 export function useButton() {
   const [dataCount, setDataCount] = useState(0);
   const [virusCount, setVirusCount] = useState(0);
-  const [virusCost, setVirusCost] = useState(100);
+  const [virusCost, setVirusCost] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
 
   const canBuyVirus = useMemo(
@@ -17,7 +17,7 @@ export function useButton() {
   // server states
   const [serverExist, setServerExist] = useState(false);
   const [serverCount, setServerCount] = useState(0);
-  const [serverCost, setServerCost] = useState(10); //draft init cost, babaan niyo nalang kung gusto niyo itest
+  const [serverCost, setServerCost] = useState(100); //draft init cost, babaan niyo nalang kung gusto niyo itest
   const canBuyServer = useMemo(
     () => dataCount >= serverCost,
     [dataCount, serverCost],
