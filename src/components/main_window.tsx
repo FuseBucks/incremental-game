@@ -13,7 +13,7 @@ export function MainWindow() {
       {/* resource board */}
       <div className="tab absolute top-20 ml-4 h-auto w-65">
         <div className="font-sans">Resources</div>
-        <div className="mt-2 flex flex-col gap-1 bg-[#d8d4d4] font-mono text-xs text-gray-800">
+        <div className="tab-internal w-63 h-20">
           <div className="m-2">
             <p>Virus: {virusCount}</p>
             <p>Data: {dataCount}</p>
@@ -25,7 +25,7 @@ export function MainWindow() {
       <div className="tab">
         {" "}
         Virus (C:)
-        <div className="tab-internal">
+        <div className="tab-internal w-75 h-45"> 
           <div className="flex gap-4">
             <button onClick={handleDataClick}>Data</button>
             <button 
