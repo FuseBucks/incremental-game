@@ -76,7 +76,15 @@ export function MainWindow() {
               onMouseDown={(e) => handleMouseDown(w.id, e)}
             >
               <div className="font-sans">{w.title}</div>
-              <div className="tab-internal" style={{ width: w.w, height: w.h }}>
+              <div
+                className="tab-internal pointer-events-auto cursor-auto"
+                style={{ width: w.w, height: w.h }}
+                onMouseDown={(e) => {
+                  // Fix to not make inner div draggable and not highlight text when you drag things.
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              >
                 {w.id === "resources" && (
                   <div className="m-2">
                     <p>Virus: {virusCount}</p>

@@ -3,6 +3,12 @@
 body {
   font-family: Tahoma;
   background-color: #222222;
+  background-image: url("/wxpBackground.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  margin: 0;
 }
 
 button {
