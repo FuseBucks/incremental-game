@@ -31,6 +31,7 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
     {
       id: "Antivirus Software",
       title: "Antivirus Software",
+
       x: 1100,
       y: 50,
       w: 400,
@@ -48,24 +49,49 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
   }
 
   function AntiVirusProgressBar({ progress }: { progress: number }) {
+    const segments = 20;
+    const filled = Math.round((progress / 100) * segments);
+
     return (
       <div
-        className="rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
+        className="flex items-center rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
         style={{
-          width: 220,
+          width: 300,
           height: 22,
           boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
+          overflow: "hidden",
         }}
       >
-        <div
-          className="h-full rounded"
-          style={{
-            width: `${progress}%`,
-            background: "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
-            boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
-            transition: "width 0.3s",
-          }}
-        />
+        <div className="flex h-full w-full gap-[2px]">
+          {Array.from({ length: segments }).map((_, i) =>
+            i < filled ? (
+              <div
+                key={i}
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  borderRadius: 2,
+                  background:
+                    "linear-gradient(180deg, #b6ff8e 0%, #4ec601 100%)",
+                  border: "1px solid #8fd16a",
+                  boxShadow: "0 1px 2px #fff",
+                  transition: "background 0.3s",
+                }}
+              />
+            ) : (
+              <div
+                key={i}
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  borderRadius: 2,
+                  background: "transparent",
+                  border: "1px solid transparent",
+                }}
+              />
+            ),
+          )}
+        </div>
       </div>
     );
   }
@@ -135,7 +161,9 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
                       <AntiVirusProgressBar progress={virusCount % 100} />
                     </div>
                     <div>
-                      <p>Antivirus Software is under development.</p>
+                      <p className="tahoma text-[12px]">
+                        Antivirus Software is under development.
+                      </p>
                     </div>
                   </div>
                 )}
