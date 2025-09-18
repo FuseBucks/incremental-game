@@ -20,10 +20,17 @@ export function MainWindow() {
   } = useButton();
 
   const [windows, setWindows] = useState([
-    { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
-    { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
+    { id: "resources", title: "Resources", x: 30, y: 40, w: 260, h: 110 },
+    { id: "virus", title: "Virus (C:)", x: 600, y: 420, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 300 },
-    { id: "Antivirus Software", title: "Antivirus Software", x: 1500, y: 50, w: 400, h: 150 },
+    {
+      id: "Antivirus Software",
+      title: "Antivirus Software",
+      x: 1100,
+      y: 50,
+      w: 400,
+      h: 150,
+    },
   ]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -36,28 +43,27 @@ export function MainWindow() {
   }
 
   function AntiVirusProgressBar({ progress }: { progress: number }) {
-  return (
-    <div
-      className="border border-blue-700 rounded shadow-inner bg-[#e9e9e9] p-1"
-      style={{
-        width: 220,
-        height: 22,
-        boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
-      }}
-    >
+    return (
       <div
-        className="h-full rounded"
+        className="rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
         style={{
-          width: `${progress}%`,
-          background:
-            "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
-          boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
-          transition: "width 0.3s",
+          width: 220,
+          height: 22,
+          boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
         }}
-      />
-    </div>
-  );
-}
+      >
+        <div
+          className="h-full rounded"
+          style={{
+            width: `${progress}%`,
+            background: "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
+            boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
+            transition: "width 0.3s",
+          }}
+        />
+      </div>
+    );
+  }
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!draggingId) return;
@@ -84,6 +90,7 @@ export function MainWindow() {
       <div
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        className="h-screen w-screen overflow-hidden"
         style={{ position: "relative", width: "100vw", height: "100vh" }}
       >
         {windows
@@ -91,7 +98,7 @@ export function MainWindow() {
           .map((w) => (
             <div
               key={w.id}
-              className="tab"
+              className="tab overflow-hidden"
               style={{
                 position: "absolute",
                 top: w.y,
@@ -116,13 +123,13 @@ export function MainWindow() {
                     <p>Data: {dataCount}</p>
                   </div>
                 )}
-                
+
                 {w.id === "Antivirus Software" && (
-                  <div className = "flex flex-col m-2 gap-4">
-                    <div className = "flex justify-center">
+                  <div className="m-2 flex flex-col gap-4">
+                    <div className="flex justify-center">
                       <AntiVirusProgressBar progress={virusCount % 100} />
                     </div>
-                    <div >
+                    <div>
                       <p>Antivirus Software is under development.</p>
                     </div>
                   </div>
