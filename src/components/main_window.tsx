@@ -3,6 +3,7 @@
 "use client";
 import React, { useState } from "react";
 import { useButton } from "../hooks/buttonHook";
+import { DataCenter, ServerUpgrades } from "./DataCenter";
 
 // ANG BADING NG TYPESCRIPT NEED PA NG MGA GANITO WTFF!!!!
 type MainWindowProps = {
@@ -241,44 +242,16 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
 
                   {w.id === "data-center" && (
                     <div className="h-full w-full p-5">
-                      <div className="mb-4 rounded text-center">
-                        <div className="font-semibold text-red-600">
-                          aLpha-01
-                        </div>
-                      </div>
-
-                      <div className="mb-4 h-50 rounded bg-blue-300 p-2">
-                        server asset will be placed here
-                      </div>
-
-                      <div className="mb-4 rounded bg-green-400 p-2 text-center">
-                        test
-                      </div>
-
-                      <div className="flex justify-center">
-                        <button
-                          onClick={handleServerClick}
-                          className={`rounded border px-4 py-2 transition-colors ${
-                            showServerUpgrades
-                              ? "bg-blue-500 text-white hover:bg-blue-600"
-                              : "bg-white hover:bg-gray-100"
-                          } group relative`}
-                        >
-                          {showServerUpgrades
-                            ? "Close Upgrades"
-                            : "Modify Server"}
-                        </button>
-                      </div>
+                      <DataCenter
+                        handleServerClick={handleServerClick}
+                        showServerUpgrades={showServerUpgrades}
+                      />
                     </div>
                   )}
 
                   {w.id === "server-upgrades" && (
                     <div className="h-full w-full p-4">
-                      <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-lg font-bold">Server Upgrades</h2>
-                      </div>
-
-                      <div className="space-y-3">test</div>
+                      <ServerUpgrades />
                     </div>
                   )}
                 </div>
