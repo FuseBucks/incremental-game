@@ -23,6 +23,7 @@ export function MainWindow() {
     { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
     { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 300 },
+    { id: "Antivirus Software", title: "Antivirus Software", x: 1500, y: 50, w: 400, h: 150 },
   ]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -89,6 +90,12 @@ export function MainWindow() {
                   <div className="m-2">
                     <p>Virus: {virusCount}</p>
                     <p>Data: {dataCount}</p>
+                  </div>
+                )}
+                
+                {w.id === "Antivirus Software" && (
+                  <div className="m-2">
+                    <p>Antivirus Software is under development.</p>
                   </div>
                 )}
 
