@@ -23,7 +23,14 @@ export function MainWindow() {
     { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
     { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 300 },
-    { id: "Antivirus Software", title: "Antivirus Software", x: 1500, y: 50, w: 400, h: 150 },
+    {
+      id: "Antivirus Software",
+      title: "Antivirus Software",
+      x: 1500,
+      y: 50,
+      w: 400,
+      h: 150,
+    },
   ]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -36,28 +43,52 @@ export function MainWindow() {
   }
 
   function AntiVirusProgressBar({ progress }: { progress: number }) {
-  return (
-    <div
-      className="border border-blue-700 rounded shadow-inner bg-[#e9e9e9] p-1"
-      style={{
-        width: 220,
-        height: 22,
-        boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
-      }}
-    >
+    const segments = 20;
+    const filled = Math.round((progress / 100) * segments);
+
+    return (
       <div
-        className="h-full rounded"
+        className="flex items-center rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
         style={{
-          width: `${progress}%`,
-          background:
-            "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
-          boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
-          transition: "width 0.3s",
+          width: 300,
+          height: 22,
+          boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
+          overflow: "hidden",
         }}
-      />
-    </div>
-  );
-}
+      >
+        <div className="flex h-full w-full gap-[2px]">
+          {Array.from({ length: segments }).map((_, i) =>
+            i < filled ? (
+              <div
+                key={i}
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  borderRadius: 2,
+                  background:
+                    "linear-gradient(180deg, #b6ff8e 0%, #4ec601 100%)",
+                  border: "1px solid #8fd16a",
+                  boxShadow: "0 1px 2px #fff",
+                  transition: "background 0.3s",
+                }}
+              />
+            ) : (
+              <div
+                key={i}
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  borderRadius: 2,
+                  background: "transparent",
+                  border: "1px solid transparent",
+                }}
+              />
+            ),
+          )}
+        </div>
+      </div>
+    );
+  }
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!draggingId) return;
@@ -116,14 +147,16 @@ export function MainWindow() {
                     <p>Data: {dataCount}</p>
                   </div>
                 )}
-                
+
                 {w.id === "Antivirus Software" && (
-                  <div className = "flex flex-col m-2 gap-4">
-                    <div className = "flex justify-center">
+                  <div className="m-2 flex flex-col gap-4">
+                    <div className="flex justify-center">
                       <AntiVirusProgressBar progress={virusCount % 100} />
                     </div>
-                    <div >
-                      <p>Antivirus Software is under development.</p>
+                    <div>
+                      <p className="tahoma text-[12px]">
+                        Antivirus Software is under development.
+                      </p>
                     </div>
                   </div>
                 )}
