@@ -18,6 +18,7 @@ export function MainWindow() {
     canBuyServer,
     handleServerClick,
   } = useButton();
+
   const [windows, setWindows] = useState([
     { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
     { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
@@ -35,12 +36,14 @@ export function MainWindow() {
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!draggingId) return;
-    const dx = e.clientX - lastMouse.x;
-    const dy = e.clientY - lastMouse.y;
+    const newX = e.clientX - lastMouse.x;
+    const newY = e.clientY - lastMouse.y;
 
-    setWindows((ws) =>
-      ws.map((w) =>
-        w.id === draggingId ? { ...w, x: w.x + dx, y: w.y + dy } : w,
+    setWindows((windowsArray) =>
+      windowsArray.map((window) =>
+        window.id === draggingId
+          ? { ...window, x: window.x + newX, y: window.y + newY }
+          : window,
       ),
     );
 
@@ -80,6 +83,7 @@ export function MainWindow() {
                     <p>Data: {dataCount}</p>
                   </div>
                 )}
+
                 {w.id === "virus" && (
                   <div className="flex gap-4">
                     <button
