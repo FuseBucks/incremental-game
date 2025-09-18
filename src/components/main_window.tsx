@@ -49,26 +49,6 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
   }
 
   function AntiVirusProgressBar({ progress }: { progress: number }) {
-
-    return (
-      <div
-        className="rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
-        style={{
-          width: 220,
-          height: 22,
-          boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
-        }}
-      >
-        <div
-          className="h-full rounded"
-          style={{
-            width: `${progress}%`,
-            background: "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
-            boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
-            transition: "width 0.3s",
-          }}
-        />
-
     const segments = 20;
     const filled = Math.round((progress / 100) * segments);
 
