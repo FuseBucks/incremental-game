@@ -4,7 +4,12 @@
 import React, { useState } from "react";
 import { useButton } from "../hooks/buttonHook";
 
-export function MainWindow() {
+// ANG BADING NG TYPESCRIPT NEED PA NG MGA GANITO WTFF!!!!
+type MainWindowProps = {
+  onAddApp: (app: { id: string; title: string }) => void;
+};
+
+export function MainWindow({ onAddApp }: MainWindowProps) {
   // use custom hook to manage button states, para malinis
   const {
     virusCount,
@@ -21,8 +26,8 @@ export function MainWindow() {
   } = useButton();
 
   const [windows, setWindows] = useState([
-    { id: "resources", title: "Resources", x: 200, y: 80, w: 260, h: 110 },
-    { id: "virus", title: "Virus (C:)", x: 600, y: 120, w: 360, h: 180 },
+    { id: "resources", title: "Resources", x: 160, y: 40, w: 260, h: 110 },
+    { id: "virus", title: "Virus", x: 600, y: 420, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 400 },
     {
       id: "server-upgrades",
@@ -35,7 +40,8 @@ export function MainWindow() {
     {
       id: "Antivirus Software",
       title: "Antivirus Software",
-      x: 1500,
+
+      x: 1100,
       y: 50,
       w: 400,
       h: 150,
@@ -126,6 +132,7 @@ export function MainWindow() {
       <div
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        className="h-screen w-screen overflow-hidden"
         style={{ position: "relative", width: "100vw", height: "100vh" }}
       >
         {windows
@@ -152,7 +159,7 @@ export function MainWindow() {
             return (
               <div
                 key={w.id}
-                className="tab"
+                className="tab overflow-hidden"
                 style={{
                   position: "absolute",
                   top: windowProps.y,
@@ -200,7 +207,10 @@ export function MainWindow() {
                   {w.id === "virus" && (
                     <div className="flex gap-4">
                       <button
-                        onClick={handleServerClick}
+                        onClick={() => {
+                          handleServerClick();
+                          onAddApp({ id: "data-center", title: "Data Center" });
+                        }}
                         // disabled={serverExist}
                         className={`group relative ${
                           serverExist ? "hidden" : ""
