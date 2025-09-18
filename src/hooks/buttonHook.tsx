@@ -17,7 +17,9 @@ export function useButton() {
   // server states
   const [serverExist, setServerExist] = useState(false);
   const [serverCount, setServerCount] = useState(0);
-  const [serverCost, setServerCost] = useState(100); //draft init cost, babaan niyo nalang kung gusto niyo itest
+  const [showServerUpgrades, setShowServerUpgrades] = useState(false);
+
+  const [serverCost, setServerCost] = useState(10); //draft init cost, babaan niyo nalang kung gusto niyo itest
   const canBuyServer = useMemo(
     () => dataCount >= serverCost,
     [dataCount, serverCost],
@@ -66,12 +68,18 @@ export function useButton() {
 
   const handleServerClick = () => {
     const currentCost = serverCost;
+
+    if (serverExist) {
+      setShowServerUpgrades(!showServerUpgrades);
+      //todo server upgrades and stuff
+    }
+
     if (dataCount >= currentCost) {
       setServerExist(true);
       setServerCount((prev) => prev + 1);
       setDataCount((prev) => prev - currentCost);
-      setServerCost((prev) => Math.floor(prev * 1.5));
     }
+    setServerCost((prev) => Math.floor(prev * 100));
   };
 
   return {
@@ -88,5 +96,6 @@ export function useButton() {
     canBuyServer,
     serverExist,
     serverCount,
+    showServerUpgrades,
   };
 }
