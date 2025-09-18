@@ -1,9 +1,10 @@
 // read commit message for more context on the structuring
 
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/buttonHook";
 import { DataCenter, ServerUpgrades } from "./DataCenter";
+import { AntivirusWindow, AntivirusWarning } from "./antivirus";
 
 // ANG BADING NG TYPESCRIPT NEED PA NG MGA GANITO WTFF!!!!
 type MainWindowProps = {
@@ -38,16 +39,35 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
       w: 400,
       h: 300,
     },
-    {
-      id: "Antivirus Software",
-      title: "Antivirus Software",
-
-      x: 1100,
-      y: 50,
-      w: 400,
-      h: 150,
-    },
+    // REMOVE Antivirus Software from initial state!
   ]);
+  const [warningShown, setWarningShown] = useState(false);
+
+  // Show warning and antivirus windows only once when virusCount >= 10
+  useEffect(() => {
+    if (virusCount >= 10 && !warningShown) {
+      setWindows((prev) => [
+        ...prev,
+        {
+          id: "warning-virus",
+          title: "Critical Warning!",
+          x: 800,
+          y: 300,
+          w: 400,
+          h: 200,
+        },
+        {
+          id: "Antivirus Software",
+          title: "Antivirus Software",
+          x: 1100,
+          y: 50,
+          w: 400,
+          h: 150,
+        },
+      ]);
+      setWarningShown(true);
+    }
+  }, [virusCount, warningShown]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
@@ -58,54 +78,6 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
     setDraggingId(id);
     setLastMouse({ x: e.clientX, y: e.clientY });
     e.preventDefault();
-  }
-
-  function AntiVirusProgressBar({ progress }: { progress: number }) {
-    const segments = 20;
-    const filled = Math.round((progress / 100) * segments);
-
-    return (
-      <div
-        className="flex items-center rounded border border-blue-700 bg-[#e9e9e9] p-1 shadow-inner"
-        style={{
-          width: 300,
-          height: 22,
-          boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
-          overflow: "hidden",
-        }}
-      >
-        <div className="flex h-full w-full gap-[2px]">
-          {Array.from({ length: segments }).map((_, i) =>
-            i < filled ? (
-              <div
-                key={i}
-                style={{
-                  flex: 1,
-                  height: "100%",
-                  borderRadius: 2,
-                  background:
-                    "linear-gradient(180deg, #b6ff8e 0%, #4ec601 100%)",
-                  border: "1px solid #8fd16a",
-                  boxShadow: "0 1px 2px #fff",
-                  transition: "background 0.3s",
-                }}
-              />
-            ) : (
-              <div
-                key={i}
-                style={{
-                  flex: 1,
-                  height: "100%",
-                  borderRadius: 2,
-                  background: "transparent",
-                  border: "1px solid transparent",
-                }}
-              />
-            ),
-          )}
-        </div>
-      </div>
-    );
   }
 
   function handleMouseMove(e: React.MouseEvent) {
@@ -191,18 +163,24 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
                       <p>Data: {dataCount}</p>
                     </div>
                   )}
+                  {w.id === "warning-virus" && (
+                    <AntivirusWarning
+                      onClose={() =>
+                        setWindows((prev) =>
+                          prev.filter((win) => win.id !== "warning-virus"),
+                        )
+                      }
+                    />
+                  )}
 
                   {w.id === "Antivirus Software" && (
-                    <div className="m-2 flex flex-col gap-4">
-                      <div className="flex justify-center">
-                        <AntiVirusProgressBar progress={virusCount % 100} />
-                      </div>
-                      <div>
-                        <p className="tahoma text-[12px]">
-                          Antivirus Software is under development.
-                        </p>
-                      </div>
-                    </div>
+                    <AntivirusWindow
+                      onClose={() =>
+                        setWindows((prev) =>
+                          prev.filter((win) => win.id !== "Antivirus Software"),
+                        )
+                      }
+                    />
                   )}
 
                   {w.id === "virus" && (
