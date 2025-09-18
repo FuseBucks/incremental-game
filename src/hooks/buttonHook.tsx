@@ -17,7 +17,7 @@ export function useButton() {
   // server states
   const [serverExist, setServerExist] = useState(false);
   const [serverCount, setServerCount] = useState(0);
-  const [serverCost, setServerCost] = useState(100); //draft init cost, babaan niyo nalang kung gusto niyo itest
+  const [serverCost, setServerCost] = useState(10); //draft init cost, babaan niyo nalang kung gusto niyo itest
   const canBuyServer = useMemo(
     () => dataCount >= serverCost,
     [dataCount, serverCost],
