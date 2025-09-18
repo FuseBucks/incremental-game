@@ -4,7 +4,12 @@
 import React, { useState } from "react";
 import { useButton } from "../hooks/buttonHook";
 
-export function MainWindow() {
+// ANG BADING NG TYPESCRIPT NEED PA NG MGA GANITO WTFF!!!!
+type MainWindowProps = {
+  onAddApp: (app: { id: string; title: string }) => void;
+};
+
+export function MainWindow({ onAddApp }: MainWindowProps) {
   // use custom hook to manage button states, para malinis
   const {
     virusCount,
@@ -20,8 +25,8 @@ export function MainWindow() {
   } = useButton();
 
   const [windows, setWindows] = useState([
-    { id: "resources", title: "Resources", x: 30, y: 40, w: 260, h: 110 },
-    { id: "virus", title: "Virus (C:)", x: 600, y: 420, w: 360, h: 180 },
+    { id: "resources", title: "Resources", x: 160, y: 40, w: 260, h: 110 },
+    { id: "virus", title: "Virus", x: 600, y: 420, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 300 },
     {
       id: "Antivirus Software",
@@ -138,7 +143,10 @@ export function MainWindow() {
                 {w.id === "virus" && (
                   <div className="flex gap-4">
                     <button
-                      onClick={handleServerClick}
+                      onClick={() => {
+                        handleServerClick();
+                        onAddApp({ id: "data-center", title: "Data Center" });
+                      }}
                       // disabled={serverExist}
                       className={`group relative ${serverExist ? "hidden" : ""} ${!canBuyServer ? "cursor-not-allowed opacity-50" : ""}`}
                     >
