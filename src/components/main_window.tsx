@@ -35,6 +35,30 @@ export function MainWindow() {
     e.preventDefault();
   }
 
+  function AntiVirusProgressBar({ progress }: { progress: number }) {
+  return (
+    <div
+      className="border border-blue-700 rounded shadow-inner bg-[#e9e9e9] p-1"
+      style={{
+        width: 220,
+        height: 22,
+        boxShadow: "inset 1px 1px 2px #fff, inset -1px -1px 2px #b5b5b5",
+      }}
+    >
+      <div
+        className="h-full rounded"
+        style={{
+          width: `${progress}%`,
+          background:
+            "linear-gradient(90deg, #3a9cff 0%, #7fd7ff 100%)",
+          boxShadow: "inset 0 1px 2px #fff, 0 1px 2px #1e90ff",
+          transition: "width 0.3s",
+        }}
+      />
+    </div>
+  );
+}
+
   function handleMouseMove(e: React.MouseEvent) {
     if (!draggingId) return;
     const newX = e.clientX - lastMouse.x;
@@ -94,8 +118,13 @@ export function MainWindow() {
                 )}
                 
                 {w.id === "Antivirus Software" && (
-                  <div className="m-2">
-                    <p>Antivirus Software is under development.</p>
+                  <div className = "flex flex-col m-2 gap-4">
+                    <div className = "flex justify-center">
+                      <AntiVirusProgressBar progress={virusCount % 100} />
+                    </div>
+                    <div >
+                      <p>Antivirus Software is under development.</p>
+                    </div>
                   </div>
                 )}
 
