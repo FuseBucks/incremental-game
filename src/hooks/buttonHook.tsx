@@ -9,6 +9,7 @@ export function useButton() {
   const [virusCost, setVirusCost] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
   const canBuyVirus = useMemo(() => dataCount >= virusCost, [dataCount, virusCost]);
+  const [isSkillTreeOpen, setIsSkillTreeOpen] = useState(false);
 
   const handleDataClick = () => {
     setDataCount(prevData => prevData + 1);
@@ -40,14 +41,25 @@ const handleVirusClick = () => {
     }
   }, [virusCount, multiplier]);
 
+  const handleSkillTreeClick = () => {
+    setIsSkillTreeOpen(true);
+  };
+
+  const closeSkillTree = () => {
+    setIsSkillTreeOpen(false);
+  };
+
   return {
     virusCount,
     dataCount,
     multiplier,
     virusCost,
     canBuyVirus,
+    isSkillTreeOpen,
     handleDataClick,
     handleVirusClick,
+    handleSkillTreeClick,
+    closeSkillTree,
     setMultiplierValue,
   };
 }
