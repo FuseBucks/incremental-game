@@ -48,11 +48,7 @@ export function AntiVirusProgressBar({ progress }: { progress: number }) {
 }
 
 // This is the full Antivirus window, including progress logic
-export function AntivirusWindow({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export function AntivirusWindow({ onClose }: { onClose: () => void }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -81,7 +77,7 @@ export function AntivirusWindow({
       </div>
       <div className="flex justify-center">
         <button
-          className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="rounded bg-blue-600 px-4 py-1 text-white transition hover:bg-blue-700"
           onClick={onClose}
         >
           Close
@@ -94,17 +90,14 @@ export function AntivirusWindow({
 export function AntivirusWarning({ onClose }: { onClose: () => void }) {
   return (
     <div className="m-2 flex flex-col gap-4">
-      <p className="text-lg font-bold text-red-600">
-        Anti-Virus Detected!
-      </p>
+      <p className="text-lg font-bold text-red-600">Anti-Virus Detected!</p>
       <p className="tahoma text-[12px]">
-        Your virus has been detected by the BOUNTY HUNTERS. They
-        are attempting to remove it. Deploy more virus to
-        increase your chances of survival.
+        Your virus has been detected by the BOUNTY HUNTERS. They are attempting
+        to remove it. Deploy more virus to increase your chances of survival.
       </p>
       <div className="flex justify-center">
         <button
-          className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="rounded bg-blue-600 px-4 py-1 text-white transition hover:bg-blue-700"
           onClick={onClose}
         >
           OK
@@ -113,4 +106,3 @@ export function AntivirusWarning({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
-

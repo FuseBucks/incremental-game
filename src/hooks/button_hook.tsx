@@ -2,6 +2,7 @@
 
 "use client";
 import { useState, useEffect, useMemo } from "react";
+import type { GameWindow } from "../types/windows";
 
 export function useButton() {
   const [dataCount, setDataCount] = useState(0);
@@ -53,7 +54,7 @@ export function useButton() {
   const closeSkillTree = () => {
     setIsSkillTreeOpen(false);
   };
-  
+
   // Auto-increment data relevant to the number of viruses owned multiplied by multiplier
   useEffect(() => {
     if (virusCount > 0) {

@@ -1,0 +1,256 @@
+// read commit message for more context on the structuring
+
+"use client";
+import React, { useState, useEffect } from "react";
+import { useButton } from "../hooks/button_hook";
+import { SkillTree } from "./SkillTree";
+import { DataCenter, ServerUpgrades } from "./DataCenter";
+import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
+import { GameWindow } from "../types/windows";
+
+type MainWindowProps = {
+  onAddApp: (app: { id: string; title: string }) => void;
+  windows: GameWindow[];
+  setWindows: React.Dispatch<React.SetStateAction<GameWindow[]>>;
+};
+
+export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
+  const {
+    virusCount,
+    dataCount,
+    virusCost,
+    canBuyVirus,
+    isSkillTreeOpen,
+    handleDataClick,
+    handleVirusClick,
+    serverExist,
+    serverCost,
+    canBuyServer,
+    handleServerClick,
+    showServerUpgrades,
+  } = useButton();
+  // REMOVE Antivirus Software from initial state!
+  const [warningShown, setWarningShown] = useState(false);
+
+  // Show warning and antivirus windows only once when virusCount >= 10
+  useEffect(() => {
+    if (virusCount >= 10 && !warningShown) {
+      setWindows((prev) => {
+        const addIfMissing = (id: string, win: GameWindow) =>
+          prev.some((p) => p.id === id) ? prev : [...prev, win];
+
+        let updated = prev;
+        if (!prev.some((w) => w.id === "warning-virus")) {
+          updated = [
+            ...updated,
+            {
+              id: "warning-virus",
+              title: "Critical Warning!",
+              x: 800,
+              y: 300,
+              w: 400,
+              h: 200,
+              open: true,
+            },
+          ];
+        }
+        if (!updated.some((w) => w.id === "Antivirus Software")) {
+          updated = [
+            ...updated,
+            {
+              id: "Antivirus Software",
+              title: "Antivirus Software",
+              x: 1100,
+              y: 50,
+              w: 400,
+              h: 150,
+              open: true,
+            },
+          ];
+          onAddApp({ id: "Antivirus Software", title: "Antivirus Software" });
+        }
+        return updated;
+      });
+      setWarningShown(true);
+    }
+  }, [virusCount, warningShown, setWindows]);
+
+  useEffect(() => {
+    setWindows((prev) =>
+      prev.map((w) =>
+        w.id === "server-upgrades" ? { ...w, open: showServerUpgrades } : w,
+      ),
+    );
+  }, [showServerUpgrades, setWindows]);
+
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+
+  function handleMouseDown(id: string, e: React.MouseEvent) {
+    if (id === "server-upgrades") return;
+    setDraggingId(id);
+    setLastMouse({ x: e.clientX, y: e.clientY });
+    e.preventDefault();
+  }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!draggingId) return;
+    const newX = e.clientX - lastMouse.x;
+    const newY = e.clientY - lastMouse.y;
+
+    setWindows((windowsArray) =>
+      windowsArray.map((window) =>
+        window.id === draggingId
+          ? { ...window, x: window.x + newX, y: window.y + newY }
+          : window,
+      ),
+    );
+
+    setLastMouse({ x: e.clientX, y: e.clientY });
+  }
+
+  function handleMouseUp() {
+    setDraggingId(null);
+  }
+
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      className="h-screen w-screen overflow-hidden"
+      style={{ position: "relative", width: "100vw", height: "100vh" }}
+    >
+      {windows
+        // filter server components if no server bought
+        .filter((w) => w.id !== "data-center" || serverExist)
+        .filter(
+          (w) =>
+            w.id !== "server-upgrades" || (serverExist && showServerUpgrades),
+        )
+        .map((w) => {
+          // place server-upgrades beside data-center when opened
+          const dataCenterWindow = windows.find(
+            (window) => window.id === "data-center",
+          );
+          const windowProps =
+            w.id === "server-upgrades" && dataCenterWindow
+              ? {
+                  ...w,
+                  x: dataCenterWindow.x + dataCenterWindow.w + 20,
+                  y: dataCenterWindow.y,
+                }
+              : w;
+
+          return (
+            <div
+              key={w.id}
+              className={`tab overflow-hidden ${!w.open ? "hidden" : ""}`}
+              style={{
+                position: "absolute",
+                top: windowProps.y,
+                left: windowProps.x,
+                cursor:
+                  w.id === "server-upgrades"
+                    ? "default"
+                    : draggingId === w.id
+                      ? "grabbing"
+                      : "grab",
+              }}
+              onMouseDown={(e) => handleMouseDown(w.id, e)}
+            >
+              <div className="font-sans">{w.title}</div>
+              <div
+                className={`tab-internal pointer-events-auto cursor-auto ${
+                  w.id === "data-center" ? "bg-amber-400" : ""
+                }`}
+                style={{ width: windowProps.w, height: windowProps.h }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              >
+                {w.id === "resources" && (
+                  <div className="m-2">
+                    <p>Virus: {virusCount}</p>
+                    <p>Data: {dataCount}</p>
+                  </div>
+                )}
+                {w.id === "warning-virus" && (
+                  <AntivirusWarning
+                    onClose={() =>
+                      setWindows((prev) =>
+                        prev.map((win) =>
+                          win.id === "warning-virus"
+                            ? { ...win, open: false }
+                            : win,
+                        ),
+                      )
+                    }
+                  />
+                )}
+                {w.id === "Antivirus Software" && (
+                  <AntivirusWindow
+                    onClose={() =>
+                      setWindows((prev) =>
+                        prev.map((win) =>
+                          win.id === "Antivirus Software"
+                            ? { ...win, open: false }
+                            : win,
+                        ),
+                      )
+                    }
+                  />
+                )}
+                {w.id === "virus" && (
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => {
+                        handleServerClick();
+                        onAddApp({ id: "data-center", title: "Data Center" });
+                      }}
+                      className={`group relative ${
+                        serverExist ? "hidden" : ""
+                      } ${
+                        !canBuyServer ? "cursor-not-allowed opacity-50" : ""
+                      }`}
+                    >
+                      Server
+                      <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-black px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        Cost: {serverCost} Data
+                      </span>
+                    </button>
+                    <button onClick={handleDataClick}>Data</button>
+                    <button
+                      onClick={handleVirusClick}
+                      disabled={!canBuyVirus}
+                      className={`group relative ${
+                        !canBuyVirus ? "cursor-not-allowed opacity-50" : ""
+                      }`}
+                    >
+                      Virus
+                      <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-black px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        Cost: {virusCost} Data
+                      </span>
+                    </button>
+                  </div>
+                )}
+                {w.id === "data-center" && (
+                  <div className="h-full w-full p-5">
+                    <DataCenter
+                      handleServerClick={handleServerClick}
+                      showServerUpgrades={showServerUpgrades}
+                    />
+                  </div>
+                )}
+                {w.id === "server-upgrades" && (
+                  <div className="h-full w-full p-4">
+                    <ServerUpgrades />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  );
+}
