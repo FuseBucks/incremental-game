@@ -3,6 +3,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/buttonHook";
+import { SkillTree } from "./skill_tree";
 import { DataCenter, ServerUpgrades } from "./DataCenter";
 import { AntivirusWindow, AntivirusWarning } from "./antivirus";
 
@@ -13,13 +14,17 @@ type MainWindowProps = {
 
 export function MainWindow({ onAddApp }: MainWindowProps) {
   // use custom hook to manage button states, para malinis
+
   const {
     virusCount,
     dataCount,
     virusCost,
     canBuyVirus,
+    isSkillTreeOpen,
     handleDataClick,
     handleVirusClick,
+    handleSkillTreeClick,
+    closeSkillTree,
     serverExist,
     serverCost,
     canBuyServer,
@@ -102,6 +107,17 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
 
   return (
     <>
+      {/* Top right button */}
+      <button
+        onClick={handleSkillTreeClick}
+        className="fixed top-4 right-4 z-10 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors shadow-lg"
+      >
+        Skill Tree
+      </button>
+
+      {/* Skill Tree Modal */}
+      <SkillTree isOpen={isSkillTreeOpen} onClose={closeSkillTree} />
+
       <div
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

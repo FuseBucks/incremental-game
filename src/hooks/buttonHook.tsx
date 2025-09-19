@@ -9,6 +9,8 @@ export function useButton() {
   const [virusCost, setVirusCost] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
 
+  const [isSkillTreeOpen, setIsSkillTreeOpen] = useState(false);
+
   const canBuyVirus = useMemo(
     () => dataCount >= virusCost,
     [dataCount, virusCost],
@@ -44,6 +46,13 @@ export function useButton() {
     setMultiplier(newMultiplier);
   };
 
+  const handleSkillTreeClick = () => {
+    setIsSkillTreeOpen(true);
+  };
+
+  const closeSkillTree = () => {
+    setIsSkillTreeOpen(false);
+  
   // Auto-increment data relevant to the number of viruses owned multiplied by multiplier
   useEffect(() => {
     if (virusCount > 0) {
@@ -88,8 +97,11 @@ export function useButton() {
     multiplier,
     virusCost,
     canBuyVirus,
+    isSkillTreeOpen,
     handleDataClick,
     handleVirusClick,
+    handleSkillTreeClick,
+    closeSkillTree,
     setMultiplierValue,
     handleServerClick,
     serverCost,
