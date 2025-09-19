@@ -2,10 +2,10 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
-import { useButton } from "../hooks/button_hook";
+import { useButton } from "../hooks/ButtonHook";
 import { SkillTree } from "./SkillTree";
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
+import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
 import { GameWindow } from "../types/windows";
 
 type MainWindowProps = {

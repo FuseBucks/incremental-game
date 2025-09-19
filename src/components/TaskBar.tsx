@@ -1,4 +1,4 @@
-import { useButton } from "../hooks/button_hook";
+import { useButton } from "../hooks/ButtonHook";
 import { SkillTree } from "./SkillTree";
 
 export function TaskBar() {
