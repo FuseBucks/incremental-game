@@ -8,7 +8,8 @@ export function useButton() {
   const [dataCount, setDataCount] = useState(0);
   const [virusCount, setVirusCount] = useState(0);
   const [virusCost, setVirusCost] = useState(10);
-  const [multiplier, setMultiplier] = useState(1);
+  const [dataMultiplier, setDataMultiplier] = useState(1);
+  const [virusMultiplier, setVirusMultiplier] = useState(1);
 
   const [isSkillTreeOpen, setIsSkillTreeOpen] = useState(false);
 
@@ -44,7 +45,8 @@ export function useButton() {
   };
 
   const setMultiplierValue = (newMultiplier: number) => {
-    setMultiplier(newMultiplier);
+    setDataMultiplier(newMultiplier);
+    setVirusMultiplier(newMultiplier);
   };
 
   const handleSkillTreeClick = () => {
@@ -55,27 +57,24 @@ export function useButton() {
     setIsSkillTreeOpen(false);
   };
 
-  // Auto-increment data relevant to the number of viruses owned multiplied by multiplier
+  // Combined auto-increment for both data and virus generation
   useEffect(() => {
-    if (virusCount > 0) {
+    const hasAnyGeneration = virusCount > 0 || serverCount > 0;
+    
+    if (hasAnyGeneration) {
       const interval = setInterval(() => {
-        setDataCount((prevData) => prevData + virusCount * multiplier);
-      }, 1000); // Increase data every 1 second
+        // Update both data and virus in a single interval to avoid timing conflicts
+        if (virusCount > 0) {
+          setDataCount((prevData) => prevData + virusCount * dataMultiplier);
+        }
+        if (serverCount > 0) {
+          setVirusCount((prevVirus) => prevVirus + serverCount * virusMultiplier);
+        }
+      }, 1000); // Increase every 1 second
 
       return () => clearInterval(interval);
     }
-  }, [virusCount, multiplier]);
-
-  // draft : same config with virus auto-increment
-  useEffect(() => {
-    if (serverCount > 0) {
-      const interval = setInterval(() => {
-        setVirusCount((prev) => prev + serverCount * multiplier);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [serverCount, multiplier]);
+  }, [virusCount, dataMultiplier, serverCount, virusMultiplier]);
 
   const handleServerClick = () => {
     const currentCost = serverCost;
@@ -96,7 +95,8 @@ export function useButton() {
   return {
     virusCount,
     dataCount,
-    multiplier,
+    dataMultiplier,
+    virusMultiplier,
     virusCost,
     canBuyVirus,
     isSkillTreeOpen,
