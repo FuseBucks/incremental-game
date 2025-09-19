@@ -2,9 +2,9 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
-import { useButton } from "../hooks/buttonHook";
+import { useButton } from "../hooks/button_hook";
 import { SkillTree } from "./skill_tree";
-import { DataCenter, ServerUpgrades } from "./DataCenter";
+import { DataCenter, ServerUpgrades } from "./data_center";
 import { AntivirusWindow, AntivirusWarning } from "./antivirus";
 
 // ANG BADING NG TYPESCRIPT NEED PA NG MGA GANITO WTFF!!!!
@@ -23,8 +23,6 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
     isSkillTreeOpen,
     handleDataClick,
     handleVirusClick,
-    handleSkillTreeClick,
-    closeSkillTree,
     serverExist,
     serverCost,
     canBuyServer,
@@ -34,7 +32,7 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
 
   const [windows, setWindows] = useState([
     { id: "resources", title: "Resources", x: 160, y: 40, w: 260, h: 110 },
-    { id: "virus", title: "Virus", x: 600, y: 420, w: 360, h: 180 },
+    { id: "virus", title: "Virus", x: 750, y: 320, w: 360, h: 180 },
     { id: "data-center", title: "Data Center", x: 400, y: 300, w: 400, h: 400 },
     {
       id: "server-upgrades",
@@ -107,17 +105,6 @@ export function MainWindow({ onAddApp }: MainWindowProps) {
 
   return (
     <>
-      {/* Top right button */}
-      <button
-        onClick={handleSkillTreeClick}
-        className="fixed top-4 right-4 z-10 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors shadow-lg"
-      >
-        Skill Tree
-      </button>
-
-      {/* Skill Tree Modal */}
-      <SkillTree isOpen={isSkillTreeOpen} onClose={closeSkillTree} />
-
       <div
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

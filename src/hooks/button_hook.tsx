@@ -52,6 +52,7 @@ export function useButton() {
 
   const closeSkillTree = () => {
     setIsSkillTreeOpen(false);
+  };
   
   // Auto-increment data relevant to the number of viruses owned multiplied by multiplier
   useEffect(() => {

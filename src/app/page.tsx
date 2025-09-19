@@ -1,7 +1,7 @@
 "use client";
 import { MainWindow } from "../components/main_window";
-import { TaskBar } from "../components/TaskBar";
-import { Application } from "../components/Application";
+import { TaskBar } from "../components/task_bar";
+import { Application } from "../components/application";
 import { useState } from "react";
 import App from "next/app";
 
