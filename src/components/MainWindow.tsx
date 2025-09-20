@@ -28,6 +28,14 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
     canBuyServer,
     handleServerClick,
     showServerUpgrades,
+    packetCount,
+    upgVirusCost,
+    upgDataCost,
+    upgPacketCost,
+    handleServerUpgrade,
+    upgPacketLevel,
+    upgDataLevel,
+    upgVirusLevel,
   } = useButton();
   // REMOVE Antivirus Software from initial state!
   const [warningShown, setWarningShown] = useState(false);
@@ -173,6 +181,9 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
                   <div className="m-2">
                     <p>Virus: {virusCount}</p>
                     <p>Data: {dataCount}</p>
+                    <p className={`${serverExist ? "" : "hidden"}`}>
+                      Packets: {packetCount}
+                    </p>
                   </div>
                 )}
                 {w.id === "warning-virus" && (
@@ -244,7 +255,16 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
                 )}
                 {w.id === "server-upgrades" && (
                   <div className="h-full w-full p-4">
-                    <ServerUpgrades />
+                    <ServerUpgrades
+                      packetCount={packetCount}
+                      upgVirusCost={upgVirusCost}
+                      upgDataCost={upgDataCost}
+                      upgPacketCost={upgPacketCost}
+                      upgVirusLevel={upgVirusLevel}
+                      upgDataLevel={upgDataLevel}
+                      upgPacketLevel={upgPacketLevel}
+                      handleServerUpgrade={handleServerUpgrade}
+                    />
                   </div>
                 )}
               </div>
