@@ -49,6 +49,15 @@ export default function Home() {
       h: 300,
       open: false,
     },
+    {
+      id: "tier",
+      title: "Tier",
+      x: 900,
+      y: 150,
+      w: 500,
+      h: 600,
+      open: false,
+    },
   ]);
 
   const handleApplication = (app: ApplicationType) => {

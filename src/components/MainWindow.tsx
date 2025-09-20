@@ -5,8 +5,9 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 import { SkillTree } from "./SkillTree";
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
+import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
 import { GameWindow } from "../types/windows";
+import { Tier } from "./Tier";
 
 type MainWindowProps = {
   onAddApp: (app: { id: string; title: string }) => void;
@@ -28,6 +29,11 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
     canBuyServer,
     handleServerClick,
     showServerUpgrades,
+    setMultiplierValue,
+    dataMultiplier,
+    virusMultiplier,
+    setDataCount,
+    setVirusCount,
     packetCount,
     upgVirusCost,
     upgDataCost,
@@ -39,6 +45,7 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
   } = useButton();
   // REMOVE Antivirus Software from initial state!
   const [warningShown, setWarningShown] = useState(false);
+  const [tierShown, setTierShown] = useState(false);
 
   // Show warning and antivirus windows only once when virusCount >= 10
   useEffect(() => {
@@ -90,6 +97,17 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
       ),
     );
   }, [showServerUpgrades, setWindows]);
+
+  // Show tier window when data >= 50 and virus >= 30
+  useEffect(() => {
+    if (dataCount >= 1 && virusCount >= 0 && !tierShown) {
+      setWindows((prev) =>
+        prev.map((w) => (w.id === "tier" ? { ...w, open: true } : w)),
+      );
+      onAddApp({ id: "tier", title: "Tier" });
+      setTierShown(true);
+    }
+  }, [dataCount, virusCount, tierShown, setWindows, onAddApp]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
@@ -264,6 +282,19 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
                       upgDataLevel={upgDataLevel}
                       upgPacketLevel={upgPacketLevel}
                       handleServerUpgrade={handleServerUpgrade}
+                    />
+                  </div>
+                )}
+                {w.id === "tier" && (
+                  <div className="h-full w-full p-4">
+                    <Tier
+                      virusCount={virusCount}
+                      dataCount={dataCount}
+                      dataMultiplier={dataMultiplier}
+                      virusMultiplier={virusMultiplier}
+                      setMultiplierValue={setMultiplierValue}
+                      setDataCount={setDataCount}
+                      setVirusCount={setVirusCount}
                     />
                   </div>
                 )}

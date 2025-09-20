@@ -183,6 +183,8 @@ export function useButton() {
     dataCount,
     dataMultiplier,
     virusMultiplier,
+    setDataCount,
+    setVirusCount,
     virusCost,
     canBuyVirus,
     isSkillTreeOpen,
