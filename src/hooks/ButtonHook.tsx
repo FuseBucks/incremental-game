@@ -18,6 +18,24 @@ export function useButton() {
     [dataCount, virusCost],
   );
 
+  // Skill tree state
+  const [unlockedSkills, setUnlockedSkills] = useState({
+    creepingSpawn: false,
+    bandwidthLeech: false,
+    telemetryBoost: false,
+    packetFragmentation: false,
+    backdoorDividend: false,
+    insideJob: false,
+    dormantPayload: false,
+    insiderAccess: false,
+    speedBoost: false,
+    bandwidthOverload: false,
+    adaptiveSurveillance: false,
+    dataCompression: false,
+  });
+
+  const [selectedSkillColumn, setSelectedSkillColumn] = useState<string | null>(null);
+
   // server states
   const [serverExist, setServerExist] = useState(false);
   const [packetCount, setPacketCount] = useState(0);
@@ -73,6 +91,51 @@ export function useButton() {
     setIsSkillTreeOpen(false);
   };
 
+  // Column multipliers based on selected skill tree
+  const getColumnMultipliers = () => {
+    let virusGenMultiplier = 1;
+    let dataGenMultiplier = 1;
+    
+    if (selectedSkillColumn === 'worms') {
+      virusGenMultiplier = 2; // x2 Virus Generation
+    } else if (selectedSkillColumn === 'spyware') {
+      dataGenMultiplier = 2; // x2 Data Generation
+    }
+    // Trojan doesn't have a base multiplier, it slows debugging instead
+    
+    return { virusGenMultiplier, dataGenMultiplier };
+  };
+
+  const { virusGenMultiplier, dataGenMultiplier } = getColumnMultipliers();
+
+  const toggleSkill = (skillName: keyof typeof unlockedSkills) => {
+    setUnlockedSkills(prev => {
+      const newState = {
+        ...prev,
+        [skillName]: !prev[skillName]
+      };
+      
+      // Determine which column this skill belongs to
+      const columnSkills = {
+        worms: ['creepingSpawn', 'bandwidthLeech', 'telemetryBoost', 'packetFragmentation'],
+        trojan: ['backdoorDividend', 'insideJob', 'dormantPayload', 'insiderAccess'],
+        spyware: ['speedBoost', 'bandwidthOverload', 'adaptiveSurveillance', 'dataCompression']
+      };
+      
+      // Find which column this skill belongs to
+      const skillColumn = Object.entries(columnSkills).find(([_, skills]) => 
+        skills.includes(skillName as string)
+      )?.[0];
+      
+      // If this is the first skill being unlocked, set the selected column
+      if (skillColumn && !selectedSkillColumn && newState[skillName]) {
+        setSelectedSkillColumn(skillColumn);
+      }
+      
+      return newState;
+    });
+  };
+
   // Combined auto-increment for both data and virus generation
   useEffect(() => {
     const hasAnyGeneration = virusCount > 0 || serverExist;
@@ -82,9 +145,19 @@ export function useButton() {
         // Update both data and virus in a single interval to avoid timing conflicts
         if (virusCount > 0) {
           setDataCount((prev) => {
-            const newValue =
-              prev + virusCount * dataMultiplier * upgDataMultiplier;
-            return newValue;
+            const baseGeneration = virusCount * dataMultiplier * upgDataMultiplier;
+            const skillMultipliedGeneration = baseGeneration * dataGenMultiplier;
+            
+            // Console log for data generation multipliers
+            console.log('=== DATA GENERATION ===');
+            console.log('Base Data Multiplier:', dataMultiplier);
+            console.log('Upgrade Data Multiplier:', upgDataMultiplier);
+            console.log('Skill Data Multiplier:', dataGenMultiplier);
+            console.log('Total Data Multiplier:', dataMultiplier * upgDataMultiplier * dataGenMultiplier);
+            console.log('Data Generation per Second:', skillMultipliedGeneration);
+            console.log('=======================');
+            
+            return prev + skillMultipliedGeneration;
           });
         }
 
@@ -97,8 +170,19 @@ export function useButton() {
           // Generate viruses only if virus upgrade is bought
           if (upgVirusLevel > 0) {
             setVirusCount((prev) => {
-              const newValue = prev + upgVirusMultiplier * virusMultiplier;
-              return newValue;
+              const baseGeneration = upgVirusMultiplier * virusMultiplier;
+              const skillMultipliedGeneration = baseGeneration * virusGenMultiplier;
+              
+              // Console log for virus generation multipliers
+              console.log('=== VIRUS GENERATION ===');
+              console.log('Base Virus Multiplier:', virusMultiplier);
+              console.log('Upgrade Virus Multiplier:', upgVirusMultiplier);
+              console.log('Skill Virus Multiplier:', virusGenMultiplier);
+              console.log('Total Virus Multiplier:', virusMultiplier * upgVirusMultiplier * virusGenMultiplier);
+              console.log('Virus Generation per Second:', skillMultipliedGeneration);
+              console.log('========================');
+              
+              return prev + skillMultipliedGeneration;
             });
           }
         }
@@ -115,6 +199,8 @@ export function useButton() {
     upgVirusMultiplier,
     upgVirusLevel,
     virusMultiplier,
+    virusGenMultiplier,
+    dataGenMultiplier,
   ]);
 
   const handleServerClick = () => {
@@ -207,5 +293,8 @@ export function useButton() {
     upgVirusLevel,
     upgDataLevel,
     upgPacketLevel,
+    unlockedSkills,
+    toggleSkill,
+    selectedSkillColumn,
   };
 }

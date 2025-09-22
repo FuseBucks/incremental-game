@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
+import { useButton } from "../hooks/ButtonHook";
 
 interface SkillTreeProps {
   isOpen: boolean;
@@ -7,23 +8,9 @@ interface SkillTreeProps {
 }
 
 export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
-  if (!isOpen) return null;
+  const { unlockedSkills, toggleSkill, selectedSkillColumn } = useButton();
 
-  // State to track which skills are unlocked
-  const [unlockedSkills, setUnlockedSkills] = useState({
-    creepingSpawn: false,
-    bandwidthLeech: false,
-    telemetryBoost: false,
-    packetFragmentation: false,
-    backdoorDividend: false,
-    insideJob: false,
-    dormantPayload: false,
-    insiderAccess: false,
-    speedBoost: false,
-    bandwidthOverload: false,
-    adaptiveSurveillance: false,
-    dataCompression: false,
-  });
+  if (!isOpen) return null;
 
   // Define which skills belong to which column
   const columnSkills = {
@@ -31,18 +18,6 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
     trojan: ['backdoorDividend', 'insideJob', 'dormantPayload', 'insiderAccess'],
     spyware: ['speedBoost', 'bandwidthOverload', 'adaptiveSurveillance', 'dataCompression']
   };
-
-  // Get the selected column (if any)
-  const getSelectedColumn = () => {
-    for (const [column, skills] of Object.entries(columnSkills)) {
-      if (skills.some(skill => unlockedSkills[skill as keyof typeof unlockedSkills])) {
-        return column;
-      }
-    }
-    return null;
-  };
-
-  const selectedColumn = getSelectedColumn();
 
   // Check if a skill can be unlocked
   const canUnlockSkill = (skillName: keyof typeof unlockedSkills) => {
@@ -54,16 +29,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
     )?.[0];
 
     // If no column selected yet, or if this skill is in the selected column
-    return !selectedColumn || selectedColumn === skillColumn;
-  };
-
-  const toggleSkill = (skillName: keyof typeof unlockedSkills) => {
-    if (!canUnlockSkill(skillName)) return;
-    
-    setUnlockedSkills(prev => ({
-      ...prev,
-      [skillName]: !prev[skillName]
-    }));
+    return !selectedSkillColumn || selectedSkillColumn === skillColumn;
   };
 
   return (
@@ -94,7 +60,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
           <div className="space-y-4 p-2">
             <div className="grid grid-cols-3 gap-6">
               {/* First Column - Worms */}
-              <div className={`space-y-4 ${selectedColumn && selectedColumn !== 'worms' ? 'opacity-50' : ''}`}>
+              <div className={`space-y-4 ${selectedSkillColumn && selectedSkillColumn !== 'worms' ? 'opacity-50' : ''}`}>
                 <h4 className="text-lg text-center font-bold text-gray-800 border-b pb-2 relative group cursor-help">
                   Worms
                   <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -176,7 +142,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
               </div>
 
               {/* Second Column - Trojan */}
-              <div className={`space-y-4 ${selectedColumn && selectedColumn !== 'trojan' ? 'opacity-50' : ''}`}>
+              <div className={`space-y-4 ${selectedSkillColumn && selectedSkillColumn !== 'trojan' ? 'opacity-50' : ''}`}>
                 <h4 className="text-lg text-center font-bold text-gray-800 border-b pb-2 relative group cursor-help">
                   Trojan
                   <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -258,7 +224,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
               </div>
 
               {/* Third Column - Spyware */}
-              <div className={`space-y-4 ${selectedColumn && selectedColumn !== 'spyware' ? 'opacity-50' : ''}`}>
+              <div className={`space-y-4 ${selectedSkillColumn && selectedSkillColumn !== 'spyware' ? 'opacity-50' : ''}`}>
                 <h4 className="text-lg text-center font-bold text-gray-800 border-b pb-2 relative group cursor-help">
                   Spyware
                   <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
