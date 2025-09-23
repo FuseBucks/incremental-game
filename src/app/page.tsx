@@ -33,7 +33,7 @@ export default function Home() {
     },
     {
       id: "data-center",
-      title: "Data Center",
+      title: "C:\\SERVER\\ALPHA-01.EXE",
       x: 400,
       y: 300,
       w: 400,

@@ -8,15 +8,17 @@ export function DataCenter({
   return (
     <>
       <div className="select-none">
-        <div className="mb-4 rounded text-center">
-          <div className="font-semibold text-red-600">aLpha-01</div>
+        <div className="h-40 overflow-y-auto border-2 border-t-[#404040] border-r-white border-b-white border-l-[#404040] bg-black p-2 text-green-400">
+          <p>&gt; aLpha-01 datacenter booting...</p>
+          <p>&gt; Loading shard modules...</p>
+          <p>&gt; Module [PacketSynth Mk I] initialized.</p>
+          <p>&gt; Connection link: STABLE</p>
+          <p className="animate-pulse">&gt; _</p>
         </div>
 
-        <div className="mb-4 h-50 rounded bg-blue-300 p-2">
-          server asset will be placed here
+        <div className="m-4 border-2 border-t-[#404040] border-r-white border-b-white border-l-[#404040] p-2 text-center">
+          Status: <span className="font-bold text-green-700">Online</span>
         </div>
-
-        <div className="mb-4 rounded bg-green-400 p-2 text-center">test</div>
 
         <div className="flex justify-center">
           <button
@@ -121,7 +123,7 @@ export function ServerUpgrades({
                   )}
                 </span>
 
-                <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-black px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 rounded bg-black px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:block group-hover:bg-black group-hover:opacity-100">
                   {!canBuy
                     ? `Need ${upg.cost - packetCount} more packets`
                     : upg.level === 0
