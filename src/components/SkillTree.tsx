@@ -8,16 +8,9 @@ interface SkillTreeProps {
 }
 
 export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
-  const { unlockedSkills, toggleSkill, selectedSkillColumn } = useButton();
+  const { unlockedSkills, toggleSkill, selectedSkillColumn, columnSkills } = useButton();
 
   if (!isOpen) return null;
-
-  // Define which skills belong to which column
-  const columnSkills = {
-    worms: ['creepingSpawn', 'bandwidthLeech', 'telemetryBoost', 'packetFragmentation'],
-    trojan: ['backdoorDividend', 'insideJob', 'dormantPayload', 'insiderAccess'],
-    spyware: ['speedBoost', 'bandwidthOverload', 'adaptiveSurveillance', 'dataCompression']
-  };
 
   // Check if a skill can be unlocked
   const canUnlockSkill = (skillName: keyof typeof unlockedSkills) => {
@@ -25,7 +18,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
     
     // Find which column this skill belongs to
     const skillColumn = Object.entries(columnSkills).find(([_, skills]) => 
-      skills.includes(skillName as string)
+      (skills as readonly string[]).includes(skillName)
     )?.[0];
 
     // If no column selected yet, or if this skill is in the selected column
@@ -106,7 +99,7 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
                 
                 <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
                   <h3 className="font-semibold text-gray-800">Telemetry Boost</h3>
-                  <p className="text-sm text-gray-600">Reduces virus costs by 8%</p>
+                  <p className="text-sm text-gray-600">Reduces virus costs by 20%</p>
                   <button 
                     className={`mt-2 px-3 py-1 rounded text-sm font-medium transition-colors ${
                       unlockedSkills.telemetryBoost 
@@ -237,16 +230,16 @@ export function SkillTree({ isOpen, onClose }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">+10% data generation per unlocked node</p>
                   <button 
                     className={`mt-2 px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      unlockedSkills.speedBoost 
+                      unlockedSkills.silentHarvest 
                         ? 'bg-green-500 hover:bg-green-600 text-white'
-                        : canUnlockSkill('speedBoost')
+                        : canUnlockSkill('silentHarvest')
                         ? 'bg-gray-400 hover:bg-gray-500 text-white cursor-pointer'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
-                    onClick={() => toggleSkill('speedBoost')}
-                    disabled={!canUnlockSkill('speedBoost')}
+                    onClick={() => toggleSkill('silentHarvest')}
+                    disabled={!canUnlockSkill('silentHarvest')}
                   >
-                    {unlockedSkills.speedBoost ? 'In use' : 'Locked'}
+                    {unlockedSkills.silentHarvest ? 'In use' : 'Locked'}
                   </button>
                 </div>
                 
