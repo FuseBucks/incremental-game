@@ -1,7 +1,7 @@
 // hook folder will contain logic to manage features where client interaction is needed  (e.g. useState, useEffect, etc)
 
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import type { GameWindow } from "../types/windows";
 import { useSkills } from "./SkillHook";
 import { calculateSkillEffects } from "../util/skills";
@@ -34,6 +34,40 @@ export function useButton() {
   const [upgVirusMultiplier, setUpgVirusMultiplier] = useState(1);
   const [upgDataMultiplier, setUpgDataMultiplier] = useState(1);
   const [upgPacketMultiplier, setUpgPacketMultiplier] = useState(1);
+
+  // Add refs for values that change and are needed in the interval
+  const virusCountRef = useRef(virusCount);
+  const serverExistRef = useRef(serverExist);
+  const unlockedSkillsRef = useRef(skills.unlockedSkills);
+  const adaptiveSurveillanceLevelRef = useRef(skills.adaptiveSurveillanceLevel);
+  const multiplierRefs = useRef({
+    dataMultiplier,
+    virusMultiplier,
+    upgDataMultiplier,
+    upgVirusMultiplier,
+    upgPacketMultiplier,
+    virusGenMultiplier,
+    dataGenMultiplier,
+    upgVirusLevel
+  });
+
+  // Update refs when values change
+  useEffect(() => { virusCountRef.current = virusCount; }, [virusCount]);
+  useEffect(() => { serverExistRef.current = serverExist; }, [serverExist]);
+  useEffect(() => { unlockedSkillsRef.current = skills.unlockedSkills; }, [skills.unlockedSkills]);
+  useEffect(() => { adaptiveSurveillanceLevelRef.current = skills.adaptiveSurveillanceLevel; }, [skills.adaptiveSurveillanceLevel]);
+  useEffect(() => {
+    multiplierRefs.current = {
+      dataMultiplier,
+      virusMultiplier,
+      upgDataMultiplier,
+      upgVirusMultiplier,
+      upgPacketMultiplier,
+      virusGenMultiplier,
+      dataGenMultiplier,
+      upgVirusLevel
+    };
+  }, [dataMultiplier, virusMultiplier, upgDataMultiplier, upgVirusMultiplier, upgPacketMultiplier, virusGenMultiplier, dataGenMultiplier, upgVirusLevel]);
 
   // Calculate individual skill effects BEFORE using them
   const skillEffects = useMemo(() => {
@@ -97,21 +131,64 @@ export function useButton() {
 
     if (hasAnyGeneration) {
       const interval = setInterval(() => {
-        // Update both data and virus in a single interval to avoid timing conflicts
-        if (virusCount > 0) {
+        // Get fresh values from refs
+        const currentVirusCount = virusCountRef.current;
+        const currentServerExist = serverExistRef.current;
+        const currentUnlockedSkills = unlockedSkillsRef.current;
+        const currentAdaptiveSurveillanceLevel = adaptiveSurveillanceLevelRef.current;
+        const currentMultipliers = multiplierRefs.current;
+        
+        // Calculate skill effects with fresh values
+        const currentSkillEffects = calculateSkillEffects(
+          currentUnlockedSkills,
+          currentVirusCount,
+          currentServerExist,
+          currentAdaptiveSurveillanceLevel
+        );
+
+        console.log("Fresh Data Generation Bonuses:", currentSkillEffects.dataGenerationBonus);
+        console.log("Current Unlocked Skills:", currentUnlockedSkills);
+        console.log("Current Virus Count:", currentVirusCount);
+        console.log("Current Server Exist:", currentServerExist);
+
+        // Update virus count first if applicable
+        if (currentServerExist && currentMultipliers.upgVirusLevel > 0) {
+          setVirusCount((prev) => {
+            const baseGeneration = 1 * currentMultipliers.upgVirusMultiplier * currentMultipliers.virusMultiplier;
+            const columnMultipliedGeneration = baseGeneration * currentMultipliers.virusGenMultiplier;
+            const skillBonusMultiplier = 1 + currentSkillEffects.virusGenerationBonus;
+            const finalGeneration = columnMultipliedGeneration * skillBonusMultiplier;
+            
+            console.log('=== VIRUS GENERATION ===');
+            console.log('Base Virus Multiplier:', currentMultipliers.virusMultiplier);
+            console.log('Upgrade Virus Multiplier:', currentMultipliers.upgVirusMultiplier);
+            console.log('Column Virus Multiplier:', currentMultipliers.virusGenMultiplier);
+            console.log('Skill Bonus Multiplier:', skillBonusMultiplier);
+            console.log('Total Virus Multiplier:', currentMultipliers.virusMultiplier * currentMultipliers.upgVirusMultiplier * currentMultipliers.virusGenMultiplier * skillBonusMultiplier);
+            console.log('Virus Generation per Second:', finalGeneration);
+            console.log('========================');
+            
+            const newVirusCount = Math.floor(prev + finalGeneration);
+            virusCountRef.current = newVirusCount; // Update ref immediately for data generation
+            return newVirusCount;
+          });
+        }
+
+        // Update data count using the fresh virus count from ref
+        if (virusCountRef.current > 0) {
           setDataCount((prev) => {
-            const baseGeneration = virusCount * dataMultiplier * upgDataMultiplier;
-            const columnMultipliedGeneration = baseGeneration * dataGenMultiplier;
-            const skillBonusMultiplier = 1 + skillEffects.dataGenerationBonus;
+            const baseGeneration = virusCountRef.current * currentMultipliers.dataMultiplier * currentMultipliers.upgDataMultiplier;
+            const columnMultipliedGeneration = baseGeneration * currentMultipliers.dataGenMultiplier;
+            const skillBonusMultiplier = 1 + currentSkillEffects.dataGenerationBonus;
             const finalGeneration = columnMultipliedGeneration * skillBonusMultiplier;
             
             console.log('=== DATA GENERATION ===');
-            console.log('Virus Count:', virusCount);
-            console.log('Base Data Multiplier:', dataMultiplier);
-            console.log('Upgrade Data Multiplier:', upgDataMultiplier);
-            console.log('Column Data Multiplier:', dataGenMultiplier);
+            console.log('Virus Count:', virusCountRef.current);
+            console.log('Base Data Multiplier:', currentMultipliers.dataMultiplier);
+            console.log('Upgrade Data Multiplier:', currentMultipliers.upgDataMultiplier);
+            console.log('Column Data Multiplier:', currentMultipliers.dataGenMultiplier);
             console.log('Skill Bonus Multiplier:', skillBonusMultiplier);
-            console.log('Total Data Multiplier:', dataMultiplier * upgDataMultiplier * dataGenMultiplier * skillBonusMultiplier);
+            console.log('Total Data Multiplier:', currentMultipliers.dataMultiplier * currentMultipliers.upgDataMultiplier * currentMultipliers.dataGenMultiplier * skillBonusMultiplier);
             console.log('Data Generation per Second:', finalGeneration);
             console.log('=======================');
             
@@ -119,45 +196,18 @@ export function useButton() {
           });
         }
 
-        if (serverExist) {
-          setPacketCount((prev) => Math.floor(prev + 1 * upgPacketMultiplier));
-
-          if (upgVirusLevel > 0) {
-            setVirusCount((prev) => {
-              const baseGeneration = 1 * upgVirusMultiplier * virusMultiplier;
-              const columnMultipliedGeneration = baseGeneration * virusGenMultiplier;
-              const skillBonusMultiplier = 1 + skillEffects.virusGenerationBonus;
-              const finalGeneration = columnMultipliedGeneration * skillBonusMultiplier;
-              
-              console.log('=== VIRUS GENERATION ===');
-              console.log('Base Virus Multiplier:', virusMultiplier);
-              console.log('Upgrade Virus Multiplier:', upgVirusMultiplier);
-              console.log('Column Virus Multiplier:', virusGenMultiplier);
-              console.log('Skill Bonus Multiplier:', skillBonusMultiplier);
-              console.log('Total Virus Multiplier:', virusMultiplier * upgVirusMultiplier * virusGenMultiplier * skillBonusMultiplier);
-              console.log('Virus Generation per Second:', finalGeneration);
-              console.log('========================');
-              
-              return Math.floor(prev + finalGeneration);
-            });
-          }
+        // Update packet count
+        if (currentServerExist) {
+          setPacketCount((prev) => Math.floor(prev + 1 * currentMultipliers.upgPacketMultiplier));
         }
       }, 1000);
 
       return () => clearInterval(interval);
     }
   }, [
+    // Use actual values instead of boolean expressions to prevent multiple intervals
     virusCount,
     serverExist,
-    dataMultiplier,
-    upgDataMultiplier,
-    upgPacketMultiplier,
-    upgVirusMultiplier,
-    upgVirusLevel,
-    virusMultiplier,
-    virusGenMultiplier,
-    dataGenMultiplier,
-    skillEffects,
   ]);
 
   const handleServerClick = () => {
