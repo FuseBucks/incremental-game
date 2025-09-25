@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 import { SkillTree } from "./SkillTree";
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
+import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
 import { GameWindow } from "../types/windows";
 import { Tier } from "./Tier";
 
