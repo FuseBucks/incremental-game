@@ -13,11 +13,11 @@ export function useButton(
   externalSetVirusCount: React.Dispatch<React.SetStateAction<number>>,
 ) {
   const [dataCount, setDataCount] = useState(0);
-  
-  // Use external virus count/setter 
+
+  // Use external virus count/setter
   const virusCount = externalVirusCount;
   const setVirusCount = externalSetVirusCount;
-  
+
   const [virusCost, setVirusCost] = useState(10);
   const [dataMultiplier, setDataMultiplier] = useState(1);
   const [virusMultiplier, setVirusMultiplier] = useState(1);
@@ -281,6 +281,7 @@ export function useButton(
           setPacketCount((prev) =>
             Math.floor(prev + 1 * currentMultipliers.upgPacketMultiplier),
           );
+          console.log("spc test:", currentMultipliers.upgPacketMultiplier);
         }
       }, 1000);
 
@@ -290,6 +291,7 @@ export function useButton(
     // Use actual values instead of boolean expressions to prevent multiple intervals
     virusCount,
     serverExist,
+    setVirusCount,
   ]);
 
   // Para ma check kung nabalik ba sa 0. Di  ma access outside interval kasi nasa local kaya gumamit ako useEffect tas pag tinoggle yung mga skills makita mo
@@ -347,20 +349,26 @@ export function useButton(
       case "virus":
         console.log("Purchasing virus upgrade");
         setUpgVirusLevel((prev) => prev + 1);
-        setUpgVirusCost((prev) => Math.floor(prev * 1.5));
-        setUpgVirusMultiplier((prev) => prev + 0.5);
+        setUpgVirusCost((prev) => Math.floor(prev * 2.5));
+        setUpgVirusMultiplier((prev) => prev * 2);
+        console.log("Current Virus Cost:", upgVirusCost);
+        console.log("Current Virus Income Multiplier:", upgVirusMultiplier);
         break;
       case "data":
         console.log("Purchasing data upgrade");
         setUpgDataLevel((prev) => prev + 1);
-        setUpgDataCost((prev) => Math.floor(prev * 1.5));
+        setUpgDataCost((prev) => Math.floor(prev * 2.5));
         setUpgDataMultiplier((prev) => prev + 0.5);
+        console.log("Current Data Cost:", upgDataCost);
+        console.log("Current Data Income Multiplier:", upgDataMultiplier);
         break;
       case "packet":
         console.log("Purchasing packet upgrade");
         setUpgPacketLevel((prev) => prev + 1);
-        setUpgPacketCost((prev) => Math.floor(prev * 1.5));
-        setUpgPacketMultiplier((prev) => prev + 0.5);
+        setUpgPacketCost((prev) => Math.floor(prev * 2.5));
+        setUpgPacketMultiplier((prev) => prev * 2);
+        console.log("Current Packet Cost:", upgPacketCost);
+        console.log("Current Packet Income Multiplier:", upgPacketMultiplier);
         break;
     }
   };
@@ -377,12 +385,16 @@ export function useButton(
     handleDataClick,
     handleVirusClick,
     setMultiplierValue,
+
+    // server main states
     handleServerClick,
     serverCost,
     canBuyServer,
     serverExist,
     serverCount,
     packetCount,
+
+    // server update
     upgVirusCost,
     upgDataCost,
     upgPacketCost,
@@ -391,6 +403,7 @@ export function useButton(
     upgVirusLevel,
     upgDataLevel,
     upgPacketLevel,
+
     skillEffects,
     // Expose skills functionality
     ...SkillHook,

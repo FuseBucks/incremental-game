@@ -1,4 +1,6 @@
+import Image from "next/image";
 // BADING BADING BADING
+
 export function Applications({
   id,
   title,
@@ -21,7 +23,13 @@ export function Applications({
       className="flex h-22 w-24 cursor-pointer flex-col items-center justify-center px-1 text-center select-none"
       onClick={handleOpenWindow}
     >
-      <img className="h-12 w-12" src="folder.png" alt="App icon" />
+      <Image
+        className="h-12 w-12"
+        src="/folder.png"
+        alt="App icon"
+        height={12}
+        width={12}
+      />
       <span className="text-sm text-black">{title}</span>
     </div>
   );

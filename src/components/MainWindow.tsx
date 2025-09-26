@@ -128,7 +128,7 @@ export function MainWindow({
         console.log(`Virus count: ${prev}, -10% (${decrease}) → ${next}`);
         return next;
       });
-    }, 3000);
+    }, 2500);
 
     return () => {
       clearInterval(progressInterval);
@@ -176,7 +176,6 @@ export function MainWindow({
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
 
   function handleMouseDown(id: string, e: React.MouseEvent) {
-    if (id === "server-upgrades") return;
     setDraggingId(id);
     setLastMouse({ x: e.clientX, y: e.clientY });
     e.preventDefault();
@@ -187,13 +186,26 @@ export function MainWindow({
     const newX = e.clientX - lastMouse.x;
     const newY = e.clientY - lastMouse.y;
 
-    setWindows((windowsArray) =>
-      windowsArray.map((window) =>
-        window.id === draggingId
-          ? { ...window, x: window.x + newX, y: window.y + newY }
-          : window,
-      ),
-    );
+    // If dragging data-center or server-upgrades, move both together
+    if (draggingId === "data-center" || draggingId === "server-upgrades") {
+      setWindows((windowsArray) =>
+        windowsArray.map((window) => {
+          if (window.id === "data-center" || window.id === "server-upgrades") {
+            return { ...window, x: window.x + newX, y: window.y + newY };
+          }
+          return window;
+        }),
+      );
+    } else {
+      // For other windows, move only the dragged window
+      setWindows((windowsArray) =>
+        windowsArray.map((window) =>
+          window.id === draggingId
+            ? { ...window, x: window.x + newX, y: window.y + newY }
+            : window,
+        ),
+      );
+    }
 
     setLastMouse({ x: e.clientX, y: e.clientY });
   }
@@ -212,10 +224,7 @@ export function MainWindow({
       {windows
         // filter server components if no server bought
         .filter((w) => w.id !== "data-center" || serverExist)
-        .filter(
-          (w) =>
-            w.id !== "server-upgrades" || (serverExist && showServerUpgrades),
-        )
+
         .map((w) => {
           // place server-upgrades beside data-center when opened
           const dataCenterWindow = windows.find(
@@ -238,12 +247,7 @@ export function MainWindow({
                 position: "absolute",
                 top: windowProps.y,
                 left: windowProps.x,
-                cursor:
-                  w.id === "server-upgrades"
-                    ? "default"
-                    : draggingId === w.id
-                      ? "grabbing"
-                      : "grab",
+                cursor: draggingId === w.id ? "grabbing" : "grab",
               }}
               onMouseDown={(e) => handleMouseDown(w.id, e)}
             >
@@ -313,8 +317,10 @@ export function MainWindow({
                     <button
                       onClick={() => {
                         handleServerClick();
+
                         onAddApp({ id: "data-center", title: "Data Center" });
                       }}
+                      disabled={!canBuyServer}
                       className={`group relative ${
                         serverExist ? "hidden" : ""
                       } ${

@@ -13,7 +13,9 @@ export function DataCenter({
           <p>&gt; Loading shard modules...</p>
           <p>&gt; Module [PacketSynth Mk I] initialized.</p>
           <p>&gt; Connection link: STABLE</p>
-          <p className="animate-pulse">&gt; _</p>
+          <p>
+            &gt; <span className="animate-pulse">_</span>
+          </p>
         </div>
 
         <div className="m-4 border-2 border-t-[#404040] border-r-white border-b-white border-l-[#404040] p-2 text-center">
