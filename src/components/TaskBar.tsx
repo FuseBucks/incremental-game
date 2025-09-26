@@ -1,8 +1,11 @@
-import { useButton } from "../hooks/ButtonHook";
 import { SkillTree } from "./SkillTree";
 
-export function TaskBar() {
-  const { isSkillTreeOpen, handleSkillTreeClick, closeSkillTree } = useButton();
+type TaskBarProps = {
+  SkillHook: ReturnType<typeof import("../hooks/SkillHook").useSkills>;
+};
+
+export function TaskBar({ SkillHook }: TaskBarProps) {
+  const { isSkillTreeOpen, handleSkillTreeClick, closeSkillTree } = SkillHook; // destructure kung ano lang need ng file na toh from SkillHook
 
   return (
     <>
@@ -19,7 +22,11 @@ export function TaskBar() {
       </div>
 
       {/* Skill Tree Modal */}
-      <SkillTree isOpen={isSkillTreeOpen} onClose={closeSkillTree} />
+      <SkillTree
+        isOpen={isSkillTreeOpen}
+        onClose={closeSkillTree}
+        SkillHook={SkillHook} // Pinasa rin sa SkillTree
+      />
     </>
   );
 }

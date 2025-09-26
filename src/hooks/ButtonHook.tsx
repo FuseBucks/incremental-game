@@ -3,19 +3,23 @@
 "use client";
 import { useState, useEffect, useMemo, useRef } from "react";
 import type { GameWindow } from "../types/windows";
-import { useSkills } from "./SkillHook";
+//import { useSkills } from "./SkillHook"; BYE BYE
 import { calculateSkillEffects } from "../util/skills";
 
-export function useButton() {
+// Accept a shared skills instance
+export function useButton(
+  SkillHook: ReturnType<typeof import("./SkillHook").useSkills>,
+) {
   const [dataCount, setDataCount] = useState(0);
   const [virusCount, setVirusCount] = useState(0);
   const [virusCost, setVirusCost] = useState(10);
   const [dataMultiplier, setDataMultiplier] = useState(1);
   const [virusMultiplier, setVirusMultiplier] = useState(1);
 
-  // Use the skills hook
-  const skills = useSkills();
-  const { virusGenMultiplier, dataGenMultiplier } = skills.getColumnMultipliers();
+  // Use the skills passed in (single source of truth)
+  // const skills = useSkills();  // removed
+  const { virusGenMultiplier, dataGenMultiplier } =
+    SkillHook.getColumnMultipliers();
 
   // server states
   const [serverExist, setServerExist] = useState(false);
@@ -38,8 +42,10 @@ export function useButton() {
   // Add refs for values that change and are needed in the interval
   const virusCountRef = useRef(virusCount);
   const serverExistRef = useRef(serverExist);
-  const unlockedSkillsRef = useRef(skills.unlockedSkills);
-  const adaptiveSurveillanceLevelRef = useRef(skills.adaptiveSurveillanceLevel);
+  const unlockedSkillsRef = useRef(SkillHook.unlockedSkills);
+  const adaptiveSurveillanceLevelRef = useRef(
+    SkillHook.adaptiveSurveillanceLevel,
+  );
   const multiplierRefs = useRef({
     dataMultiplier,
     virusMultiplier,
@@ -48,14 +54,22 @@ export function useButton() {
     upgPacketMultiplier,
     virusGenMultiplier,
     dataGenMultiplier,
-    upgVirusLevel
+    upgVirusLevel,
   });
 
   // Update refs when values change
-  useEffect(() => { virusCountRef.current = virusCount; }, [virusCount]);
-  useEffect(() => { serverExistRef.current = serverExist; }, [serverExist]);
-  useEffect(() => { unlockedSkillsRef.current = skills.unlockedSkills; }, [skills.unlockedSkills]);
-  useEffect(() => { adaptiveSurveillanceLevelRef.current = skills.adaptiveSurveillanceLevel; }, [skills.adaptiveSurveillanceLevel]);
+  useEffect(() => {
+    virusCountRef.current = virusCount;
+  }, [virusCount]);
+  useEffect(() => {
+    serverExistRef.current = serverExist;
+  }, [serverExist]);
+  useEffect(() => {
+    unlockedSkillsRef.current = SkillHook.unlockedSkills;
+  }, [SkillHook.unlockedSkills]);
+  useEffect(() => {
+    adaptiveSurveillanceLevelRef.current = SkillHook.adaptiveSurveillanceLevel;
+  }, [SkillHook.adaptiveSurveillanceLevel]);
   useEffect(() => {
     multiplierRefs.current = {
       dataMultiplier,
@@ -65,20 +79,34 @@ export function useButton() {
       upgPacketMultiplier,
       virusGenMultiplier,
       dataGenMultiplier,
-      upgVirusLevel
+      upgVirusLevel,
     };
-  }, [dataMultiplier, virusMultiplier, upgDataMultiplier, upgVirusMultiplier, upgPacketMultiplier, virusGenMultiplier, dataGenMultiplier, upgVirusLevel]);
+  }, [
+    dataMultiplier,
+    virusMultiplier,
+    upgDataMultiplier,
+    upgVirusMultiplier,
+    upgPacketMultiplier,
+    virusGenMultiplier,
+    dataGenMultiplier,
+    upgVirusLevel,
+  ]);
 
   // Calculate individual skill effects BEFORE using them
   const skillEffects = useMemo(() => {
     return calculateSkillEffects(
-      skills.unlockedSkills,
+      SkillHook.unlockedSkills,
       virusCount,
       serverExist,
-      skills.adaptiveSurveillanceLevel
+      SkillHook.adaptiveSurveillanceLevel,
     );
-  }, [skills.unlockedSkills, virusCount, serverExist, skills.adaptiveSurveillanceLevel]);
-  
+  }, [
+    SkillHook.unlockedSkills,
+    virusCount,
+    serverExist,
+    SkillHook.adaptiveSurveillanceLevel,
+  ]);
+
   // Calculate effective costs BEFORE using them
   const effectiveVirusCost = useMemo(() => {
     return Math.floor(virusCost * (1 - skillEffects.virusCostReduction));
@@ -131,22 +159,26 @@ export function useButton() {
 
     if (hasAnyGeneration) {
       const interval = setInterval(() => {
+        // nilagay ko sa labas para lang ma test yung mga values
         // Get fresh values from refs
         const currentVirusCount = virusCountRef.current;
         const currentServerExist = serverExistRef.current;
         const currentUnlockedSkills = unlockedSkillsRef.current;
-        const currentAdaptiveSurveillanceLevel = adaptiveSurveillanceLevelRef.current;
+        const currentAdaptiveSurveillanceLevel =
+          adaptiveSurveillanceLevelRef.current;
         const currentMultipliers = multiplierRefs.current;
-        
+
         // Calculate skill effects with fresh values
         const currentSkillEffects = calculateSkillEffects(
           currentUnlockedSkills,
           currentVirusCount,
           currentServerExist,
-          currentAdaptiveSurveillanceLevel
+          currentAdaptiveSurveillanceLevel,
         );
-
-        console.log("Fresh Data Generation Bonuses:", currentSkillEffects.dataGenerationBonus);
+        console.log(
+          "Fresh Data Generation Bonuses:",
+          currentSkillEffects.dataGenerationBonus,
+        );
         console.log("Current Unlocked Skills:", currentUnlockedSkills);
         console.log("Current Virus Count:", currentVirusCount);
         console.log("Current Server Exist:", currentServerExist);
@@ -154,20 +186,41 @@ export function useButton() {
         // Update virus count first if applicable
         if (currentServerExist && currentMultipliers.upgVirusLevel > 0) {
           setVirusCount((prev) => {
-            const baseGeneration = 1 * currentMultipliers.upgVirusMultiplier * currentMultipliers.virusMultiplier;
-            const columnMultipliedGeneration = baseGeneration * currentMultipliers.virusGenMultiplier;
-            const skillBonusMultiplier = 1 + currentSkillEffects.virusGenerationBonus;
-            const finalGeneration = columnMultipliedGeneration * skillBonusMultiplier;
-            
-            console.log('=== VIRUS GENERATION ===');
-            console.log('Base Virus Multiplier:', currentMultipliers.virusMultiplier);
-            console.log('Upgrade Virus Multiplier:', currentMultipliers.upgVirusMultiplier);
-            console.log('Column Virus Multiplier:', currentMultipliers.virusGenMultiplier);
-            console.log('Skill Bonus Multiplier:', skillBonusMultiplier);
-            console.log('Total Virus Multiplier:', currentMultipliers.virusMultiplier * currentMultipliers.upgVirusMultiplier * currentMultipliers.virusGenMultiplier * skillBonusMultiplier);
-            console.log('Virus Generation per Second:', finalGeneration);
-            console.log('========================');
-            
+            const baseGeneration =
+              1 *
+              currentMultipliers.upgVirusMultiplier *
+              currentMultipliers.virusMultiplier;
+            const columnMultipliedGeneration =
+              baseGeneration * currentMultipliers.virusGenMultiplier;
+            const skillBonusMultiplier =
+              1 + currentSkillEffects.virusGenerationBonus;
+            const finalGeneration =
+              columnMultipliedGeneration * skillBonusMultiplier;
+
+            console.log("=== VIRUS GENERATION ===");
+            console.log(
+              "Base Virus Multiplier:",
+              currentMultipliers.virusMultiplier,
+            );
+            console.log(
+              "Upgrade Virus Multiplier:",
+              currentMultipliers.upgVirusMultiplier,
+            );
+            console.log(
+              "Column Virus Multiplier:",
+              currentMultipliers.virusGenMultiplier,
+            );
+            console.log("Skill Bonus Multiplier:", skillBonusMultiplier);
+            console.log(
+              "Total Virus Multiplier:",
+              currentMultipliers.virusMultiplier *
+                currentMultipliers.upgVirusMultiplier *
+                currentMultipliers.virusGenMultiplier *
+                skillBonusMultiplier,
+            );
+            console.log("Virus Generation per Second:", finalGeneration);
+            console.log("========================");
+
             const newVirusCount = Math.floor(prev + finalGeneration);
             virusCountRef.current = newVirusCount; // Update ref immediately for data generation
             return newVirusCount;
@@ -177,28 +230,51 @@ export function useButton() {
         // Update data count using the fresh virus count from ref
         if (virusCountRef.current > 0) {
           setDataCount((prev) => {
-            const baseGeneration = virusCountRef.current * currentMultipliers.dataMultiplier * currentMultipliers.upgDataMultiplier;
-            const columnMultipliedGeneration = baseGeneration * currentMultipliers.dataGenMultiplier;
-            const skillBonusMultiplier = 1 + currentSkillEffects.dataGenerationBonus;
-            const finalGeneration = columnMultipliedGeneration * skillBonusMultiplier;
-            
-            console.log('=== DATA GENERATION ===');
-            console.log('Virus Count:', virusCountRef.current);
-            console.log('Base Data Multiplier:', currentMultipliers.dataMultiplier);
-            console.log('Upgrade Data Multiplier:', currentMultipliers.upgDataMultiplier);
-            console.log('Column Data Multiplier:', currentMultipliers.dataGenMultiplier);
-            console.log('Skill Bonus Multiplier:', skillBonusMultiplier);
-            console.log('Total Data Multiplier:', currentMultipliers.dataMultiplier * currentMultipliers.upgDataMultiplier * currentMultipliers.dataGenMultiplier * skillBonusMultiplier);
-            console.log('Data Generation per Second:', finalGeneration);
-            console.log('=======================');
-            
+            const baseGeneration =
+              virusCountRef.current *
+              currentMultipliers.dataMultiplier *
+              currentMultipliers.upgDataMultiplier;
+            const columnMultipliedGeneration =
+              baseGeneration * currentMultipliers.dataGenMultiplier;
+            const skillBonusMultiplier =
+              1 + currentSkillEffects.dataGenerationBonus;
+            const finalGeneration =
+              columnMultipliedGeneration * skillBonusMultiplier;
+
+            console.log("=== DATA GENERATION ===");
+            console.log("Virus Count:", virusCountRef.current);
+            console.log(
+              "Base Data Multiplier:",
+              currentMultipliers.dataMultiplier,
+            );
+            console.log(
+              "Upgrade Data Multiplier:",
+              currentMultipliers.upgDataMultiplier,
+            );
+            console.log(
+              "Column Data Multiplier:",
+              currentMultipliers.dataGenMultiplier,
+            );
+            console.log("Skill Bonus Multiplier:", skillBonusMultiplier);
+            console.log(
+              "Total Data Multiplier:",
+              currentMultipliers.dataMultiplier *
+                currentMultipliers.upgDataMultiplier *
+                currentMultipliers.dataGenMultiplier *
+                skillBonusMultiplier,
+            );
+            console.log("Data Generation per Second:", finalGeneration);
+            console.log("=======================");
+
             return Math.floor(prev + finalGeneration);
           });
         }
 
         // Update packet count
         if (currentServerExist) {
-          setPacketCount((prev) => Math.floor(prev + 1 * currentMultipliers.upgPacketMultiplier));
+          setPacketCount((prev) =>
+            Math.floor(prev + 1 * currentMultipliers.upgPacketMultiplier),
+          );
         }
       }, 1000);
 
@@ -209,6 +285,16 @@ export function useButton() {
     virusCount,
     serverExist,
   ]);
+
+  // Para ma check kung nabalik ba sa 0. Di  ma access outside interval kasi nasa local kaya gumamit ako useEffect tas pag tinoggle yung mga skills makita mo
+  useEffect(() => {
+    console.log(
+      "Outside Interval - Data Generation Bonus:",
+      skillEffects.dataGenerationBonus,
+      "Unlocked Skills:",
+      SkillHook.unlockedSkills,
+    );
+  }, [skillEffects.dataGenerationBonus, SkillHook.unlockedSkills]);
 
   const handleServerClick = () => {
     const currentCost = serverCost;
@@ -241,7 +327,9 @@ export function useButton() {
     }
 
     // Apply skill-based cost reduction
-    const effectiveCost = Math.floor(baseCost * (1 - skillEffects.serverUpgradeCostReduction));
+    const effectiveCost = Math.floor(
+      baseCost * (1 - skillEffects.serverUpgradeCostReduction),
+    );
 
     if (packetCount < effectiveCost) {
       return;
@@ -299,6 +387,6 @@ export function useButton() {
     upgPacketLevel,
     skillEffects,
     // Expose skills functionality
-    ...skills,
+    ...SkillHook,
   };
 }
