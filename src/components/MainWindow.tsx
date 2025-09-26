@@ -58,10 +58,11 @@ export function MainWindow({
   const [antivirusProgress, setAntivirusProgress] = useState(0);
   const [antivirusActive, setAntivirusActive] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [mobileTierAcquired, setMobileTierAcquired] = useState(false);
 
   // Show warning and antivirus windows only once when virusCount >= 10
   useEffect(() => {
-    if (virusCount >= 10 && !warningShown) {
+    if (mobileTierAcquired && !warningShown) {
       setAntivirusActive(true);
       setWindows((prev) => {
         const addIfMissing = (id: string, win: GameWindow) =>
@@ -119,14 +120,15 @@ export function MainWindow({
       });
     }, 10000);
 
-    //1 virus every 5 seconds
+    // Decrease virus count by 10% every 3 seconds
     const virusInterval = setInterval(() => {
       setVirusCount((prev) => {
-        const next = Math.max(0, prev - 1);
-        console.log("Virus count:", next);
+        const decrease = Math.floor(prev * 0.1);
+        const next = Math.max(0, prev - decrease);
+        console.log(`Virus count: ${prev}, -10% (${decrease}) → ${next}`);
         return next;
       });
-    }, 5000);
+    }, 3000);
 
     return () => {
       clearInterval(progressInterval);
@@ -371,6 +373,7 @@ export function MainWindow({
                       setMultiplierValue={setMultiplierValue}
                       setDataCount={setDataCount}
                       setVirusCount={setVirusCount}
+                      onMobileTierAcquired={() => setMobileTierAcquired(true)}
                     />
                   </div>
                 )}

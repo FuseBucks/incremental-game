@@ -17,6 +17,7 @@ type TierProps = {
   setMultiplierValue: (m: number) => void;
   setDataCount: React.Dispatch<React.SetStateAction<number>>;
   setVirusCount: React.Dispatch<React.SetStateAction<number>>;
+  onMobileTierAcquired?: () => void;
 };
 
 export function Tier({
@@ -27,6 +28,7 @@ export function Tier({
   virusMultiplier,
   setDataCount,
   setVirusCount,
+  onMobileTierAcquired
 }: TierProps) {
   const [tiers, setTiers] = useState<TierDetails[]>([
     {
@@ -71,6 +73,10 @@ export function Tier({
       setMultiplierValue(tier.multiplier);
       setDataCount((prev) => prev - tier.dataCost);
       setVirusCount((prev) => prev - tier.virusCost);
+    }
+
+     if (tier.id === "mobile" && !tier.acquired && onMobileTierAcquired) {
+      onMobileTierAcquired();
     }
   }
 
