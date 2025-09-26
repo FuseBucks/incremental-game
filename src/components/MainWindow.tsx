@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 // import { SkillTree } from "./SkillTree"; WALA NA TOH SINCE MANGGALING NA SA PARENT
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
+import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
 import { GameWindow } from "../types/windows";
 import { Tier } from "./Tier";
 
@@ -123,7 +123,7 @@ export function MainWindow({
     const virusInterval = setInterval(() => {
       setVirusCount((prev) => {
         const next = Math.max(0, prev - 1);
-        console.log("Virus count:", next); 
+        console.log("Virus count:", next);
         return next;
       });
     }, 5000);
