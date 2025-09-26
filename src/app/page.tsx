@@ -5,8 +5,11 @@ import { TaskBar } from "../components/TaskBar";
 import { useState } from "react";
 import { GameWindow } from "../types/windows";
 import { ApplicationType } from "../types/windows";
+import { useSkills } from "../hooks/SkillHook"; // yipee
 
 export default function Home() {
+  const SkillHook = useSkills(); // Para may access parents tas pasa niya sa components. Para isang instance lang all throughout
+
   const [application, setApplication] = useState<ApplicationType[]>([
     { id: "virus", title: "Virus" },
     { id: "resources", title: "Resources" },
@@ -73,11 +76,11 @@ export default function Home() {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       <MainWindow
+        SkillHook={SkillHook} // PASS IT PASS IT UUUUUUUHHHHHH
         onAddApp={handleApplication}
         windows={windows}
         setWindows={setWindows}
       />
-
       <div className="absolute top-7 left-1">
         {application.map((app, idx) => (
           <Applications
@@ -88,8 +91,7 @@ export default function Home() {
           />
         ))}
       </div>
-
-      <TaskBar />
+      <TaskBar SkillHook={SkillHook} />
     </div>
   );
 }
