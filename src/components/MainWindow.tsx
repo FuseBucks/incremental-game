@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 // import { SkillTree } from "./SkillTree"; WALA NA TOH SINCE MANGGALING NA SA PARENT
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
+import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
 import { GameWindow } from "../types/windows";
 import { Tier } from "./Tier";
 

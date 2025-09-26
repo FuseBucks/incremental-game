@@ -6,22 +6,22 @@ export interface SkillCosts {
 
 export const SKILL_COSTS: SkillCosts = {
   // Worms Column - Earlier skills cost less
-  creepingSpawn: 5,
-  bandwidthLeech: 15,
-  telemetryBoost: 25,
-  packetFragmentation: 40,
+  creepingSpawn: 50,
+  protocolEfficiency: 150,
+  bandwidthLeech: 250,
+  replicationSurge: 400,
   
   // Trojan Column - Balanced costs
-  backdoorDividend: 10,
-  insideJob: 20,
-  dormantPayload: 35,
-  insiderAccess: 50,
+  backdoorDividend: 100,
+  dormantCache: 200,
+  insideJob: 350,
+  stealthBuffer: 500,
   
   // Spyware Column - Higher costs for powerful skills
-  silentHarvest: 12,
-  bandwidthOverload: 30,
-  adaptiveSurveillance: 45,
-  dataCompression: 60,
+  dataCompression: 120,
+  silentHarvest: 300,
+  adaptiveSurveillance: 450,
+  packetJammer: 600,
 };
 
 export interface SkillEffects {
@@ -49,13 +49,13 @@ export function calculateSkillEffects(
   let autoUnlockServers = false;
 
   // Worms Skills
-  if (unlockedSkills.bandwidthLeech) {
+  if (unlockedSkills.protocolEfficiency) {
     dataGenerationBonus += 0.1; // +10% passive data
   }
-  if (unlockedSkills.telemetryBoost) {
+  if (unlockedSkills.bandwidthLeech) {
     virusCostReduction += 0.2; // -20% virus costs
   }
-  if (unlockedSkills.packetFragmentation) {
+  if (unlockedSkills.replicationSurge) {
     virusGenerationBonus += 0.15; // +15% virus production
     debuggingSpeedReduction += 0.1; // +10% debugging speed
   }
@@ -68,26 +68,26 @@ export function calculateSkillEffects(
     dataGenerationBonus += 0.05; // +5% data generation
     debuggingSpeedReduction += 0.1; // +10% debugging speed
   }
-  if (unlockedSkills.insideJob) {
+  if (unlockedSkills.dormantCache) {
     dataGenerationBonus += debuggingSpeedReduction; // data generation bonus based on debugging speed
   }
-  if (unlockedSkills.dormantPayload) {
+  if (unlockedSkills.insideJob) {
     serverUpgradeCostReduction += 0.15; // -15% server upgrade costs
   }
-  // insiderAccess: Ready for debugging speed mechanics when implemented
+  // stealthBuffer: Ready for debugging speed mechanics when implemented
 
   // Spyware Skills
-  if (unlockedSkills.silentHarvest) {
+  if (unlockedSkills.dataCompression) {
     const nodeCount = serverExist ? 1 : 0; // Only count if server exists (max 1)
     dataGenerationBonus += nodeCount * 0.1; // +10% data generation per node
   }
-  if (unlockedSkills.bandwidthOverload) {
+  if (unlockedSkills.silentHarvest) {
     dataClickBonus += virusCount; // data creation bonus based on virus count
   }
-  if (unlockedSkills.dataCompression) {
+  if (unlockedSkills.adaptiveSurveillance) {
     serverUpgradeCostReduction += 0.2; // -20% server upgrade costs
   }
-  if (unlockedSkills.adaptiveSurveillance) {
+  if (unlockedSkills.packetJammer) {
     // Base 12% + 2% per minute (level increases every minute when skill is active)
     dataGenerationBonus += 0.12 + (adaptiveSurveillanceLevel * 0.02);
   }
