@@ -149,16 +149,6 @@ export function useButton(
     setVirusMultiplier(newMultiplier);
   };
 
-  // Auto-unlock servers when Creeping Spawn is active
-  useEffect(() => {
-    if (skillEffects.autoUnlockServers && !serverExist) {
-      console.log("Auto-unlocking server due to Creeping Spawn skill");
-      setServerExist(true);
-      setServerCount(1); // Set to 1 instead of incrementing
-      // Don't deduct data cost when unlocked via skill
-    }
-  }, [skillEffects.autoUnlockServers, serverExist]);
-
   // Combined auto-increment for both data and virus generation
   useEffect(() => {
     const hasAnyGeneration = virusCount > 0 || serverExist;
