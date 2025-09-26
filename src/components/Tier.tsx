@@ -19,6 +19,7 @@ type TierProps = {
   setDataCount: React.Dispatch<React.SetStateAction<number>>;
   setVirusCount: React.Dispatch<React.SetStateAction<number>>;
   skillEffects: SkillEffects;
+  onMobileTierAcquired?: () => void;
 };
 
 export function Tier({
@@ -30,6 +31,7 @@ export function Tier({
   setDataCount,
   setVirusCount,
   skillEffects,
+  onMobileTierAcquired
 }: TierProps) {
   const [tiers, setTiers] = useState<TierDetails[]>([
     {
@@ -93,6 +95,10 @@ export function Tier({
       setMultiplierValue(tier.multiplier);
       setDataCount((prev) => prev - effectiveDataCost);
       setVirusCount((prev) => prev - effectiveVirusCost);
+    }
+
+     if (tier.id === "mobile" && !tier.acquired && onMobileTierAcquired) {
+      onMobileTierAcquired();
     }
   }
 
