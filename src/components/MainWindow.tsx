@@ -101,14 +101,29 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
     if (antivirusProgress >= 100) return;
 
     // need balancing. draft also because its affected by skill trees and tiers
-    const interval = setInterval(() => {
-      setAntivirusProgress((prev) => Math.min(100, prev + 1)); 
-      console.log("Antivirus progress:", antivirusProgress);
-      setVirusCount((prev) => Math.max(0, prev - 1)); 
-      console.log("Virus count:", virusCount);
+
+    //1% every 10 seconds
+    const progressInterval = setInterval(() => {
+      setAntivirusProgress((prev) => {
+        const next = Math.min(100, prev + 1);
+        console.log("Antivirus progress:", next);
+        return next;
+      });
     }, 10000);
 
-    return () => clearInterval(interval);
+    //1 virus every 5 seconds
+    const virusInterval = setInterval(() => {
+      setVirusCount((prev) => {
+        const next = Math.max(0, prev - 1);
+        console.log("Virus count:", next); 
+        return next;
+      });
+    }, 5000);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(virusInterval);
+    };
   }, [antivirusActive, antivirusProgress, setVirusCount]);
 
   // Alert when antivirus completes
