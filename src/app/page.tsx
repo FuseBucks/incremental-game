@@ -78,6 +78,14 @@ export default function Home() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
+      <MainWindow
+        SkillHook={SkillHook} // PASS IT PASS IT UUUUUUUHHHHHH
+        onAddApp={handleApplication}
+        windows={windows}
+        setWindows={setWindows}
+        virusCount={virusCount}
+        setVirusCount={setVirusCount}
+      />
       <div className="absolute top-7 left-1">
         {application.map((app, idx) => (
           <Applications
@@ -89,16 +97,6 @@ export default function Home() {
           />
         ))}
       </div>
-
-      <MainWindow
-        SkillHook={SkillHook} // PASS IT PASS IT UUUUUUUHHHHHH
-        onAddApp={handleApplication}
-        windows={windows}
-        setWindows={setWindows}
-        virusCount={virusCount}
-        setVirusCount={setVirusCount}
-      />
-
       <TaskBar SkillHook={SkillHook} />
     </div>
   );
