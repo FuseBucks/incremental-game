@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 // import { SkillTree } from "./SkillTree"; WALA NA TOH SINCE MANGGALING NA SA PARENT
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
+import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
 import { GameWindow } from "../types/windows";
 import { Tier } from "./Tier";
 
@@ -50,6 +50,7 @@ export function MainWindow({
     upgPacketLevel,
     upgDataLevel,
     upgVirusLevel,
+    skillEffects,
   } = useButton(SkillHook, virusCount, setVirusCount); // Pass external virus count and setter
   // REMOVE Antivirus Software from initial state!
   const [warningShown, setWarningShown] = useState(false);
@@ -111,14 +112,20 @@ export function MainWindow({
 
     // need balancing. draft also because its affected by skill trees and tiers
 
-    //1% every 10 seconds
+    // Apply debugging speed reduction from skills (higher reduction = slower debugging = longer intervals)
+    const baseProgressInterval = 10000; // 10 seconds base
+    const effectiveProgressInterval = baseProgressInterval * (1 + skillEffects.debuggingSpeedReduction);
+
+    console.log("Effective progress interval (ms):", effectiveProgressInterval);
+
+    //1% every 10 seconds (base), but slowed by debugging speed reduction
     const progressInterval = setInterval(() => {
       setAntivirusProgress((prev) => {
         const next = Math.min(100, prev + 1);
         console.log("Antivirus progress:", next);
         return next;
       });
-    }, 10000);
+    }, effectiveProgressInterval);
 
     // Decrease virus count by 10% every 3 seconds
     const virusInterval = setInterval(() => {
@@ -373,6 +380,7 @@ export function MainWindow({
                       setMultiplierValue={setMultiplierValue}
                       setDataCount={setDataCount}
                       setVirusCount={setVirusCount}
+                      skillEffects={skillEffects}
                       onMobileTierAcquired={() => setMobileTierAcquired(true)}
                     />
                   </div>
