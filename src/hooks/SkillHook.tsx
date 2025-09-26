@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
+import { SKILL_COSTS } from "../util/skills";
 
 export interface SkillState {
   creepingSpawn: boolean;
@@ -16,7 +17,10 @@ export interface SkillState {
   dataCompression: boolean;
 }
 
-export function useSkills() {
+export function useSkills(
+  virusCount: number = 0,
+  setVirusCount?: (count: number | ((prev: number) => number)) => void
+) {
   const [isSkillTreeOpen, setIsSkillTreeOpen] = useState(false);
   const [selectedSkillColumn, setSelectedSkillColumn] = useState<string | null>(null);
   const [adaptiveSurveillanceLevel, setAdaptiveSurveillanceLevel] = useState(0);
@@ -60,11 +64,31 @@ export function useSkills() {
   };
 
   const toggleSkill = (skillName: keyof SkillState) => {
+    const skillCost = SKILL_COSTS[skillName] || 0;
+    const isUnlocking = !unlockedSkills[skillName];
+    
+    // If skill is already unlocked, prevent toggling it off
+    if (unlockedSkills[skillName]) {
+      console.log(`Skill ${skillName} is already unlocked and cannot be disabled`);
+      return;
+    }
+    
+    // Check if we're trying to unlock a skill and don't have enough viruses
+    if (isUnlocking && virusCount < skillCost) {
+      console.log(`Not enough viruses to unlock ${skillName}. Need: ${skillCost}, Have: ${virusCount}`);
+      return;
+    }
+
     setUnlockedSkills(prev => {
       const newState = {
         ...prev,
-        [skillName]: !prev[skillName]
+        [skillName]: true // Always set to true when unlocking, never toggle off
       };
+      
+      // Deduct virus cost when unlocking
+      if (setVirusCount) {
+        setVirusCount(prevVirusCount => prevVirusCount - skillCost);
+      }
       
       // Find which column this skill belongs to
       const skillColumn = Object.entries(columnSkills).find(([_, skills]) => 
@@ -74,12 +98,6 @@ export function useSkills() {
       // If this is the first skill being unlocked, set the selected column
       if (skillColumn && !selectedSkillColumn && newState[skillName]) {
         setSelectedSkillColumn(skillColumn);
-      }
-      
-      // Check if all skills are now disabled - if so, reset the selected column
-      const allSkillsDisabled = Object.values(newState).every(skill => !skill);
-      if (allSkillsDisabled) {
-        setSelectedSkillColumn(null);
       }
       
       return newState;
@@ -92,6 +110,17 @@ export function useSkills() {
 
   const closeSkillTree = () => {
     setIsSkillTreeOpen(false);
+  };
+
+  // Helper function to check if a skill can be afforded
+  const canAffordSkill = (skillName: keyof SkillState) => {
+    const skillCost = SKILL_COSTS[skillName] || 0;
+    return virusCount >= skillCost;
+  };
+
+  // Helper function to get skill cost
+  const getSkillCost = (skillName: keyof SkillState) => {
+    return SKILL_COSTS[skillName] || 0;
   };
 
   // Add useEffect to handle Adaptive Surveillance progression
@@ -126,5 +155,7 @@ export function useSkills() {
     toggleSkill,
     handleSkillTreeClick,
     closeSkillTree,
+    canAffordSkill,
+    getSkillCost,
   };
 }

@@ -6,12 +6,18 @@ import type { GameWindow } from "../types/windows";
 //import { useSkills } from "./SkillHook"; BYE BYE
 import { calculateSkillEffects } from "../util/skills";
 
-// Accept a shared skills instance
+// Accept a shared skills instance and external virus count management
 export function useButton(
   SkillHook: ReturnType<typeof import("./SkillHook").useSkills>,
+  externalVirusCount: number,
+  externalSetVirusCount: React.Dispatch<React.SetStateAction<number>>,
 ) {
   const [dataCount, setDataCount] = useState(0);
-  const [virusCount, setVirusCount] = useState(0);
+  
+  // Use external virus count/setter 
+  const virusCount = externalVirusCount;
+  const setVirusCount = externalSetVirusCount;
+  
   const [virusCost, setVirusCost] = useState(10);
   const [dataMultiplier, setDataMultiplier] = useState(1);
   const [virusMultiplier, setVirusMultiplier] = useState(1);

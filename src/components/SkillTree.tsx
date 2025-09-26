@@ -9,14 +9,23 @@ interface SkillTreeProps {
 }
 
 export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
-  const { unlockedSkills, toggleSkill, selectedSkillColumn, columnSkills } =
-    SkillHook;
+  const { 
+    unlockedSkills, 
+    toggleSkill, 
+    selectedSkillColumn, 
+    columnSkills, 
+    canAffordSkill, 
+    getSkillCost 
+  } = SkillHook;
 
   if (!isOpen) return null;
 
   // Check if a skill can be unlocked
   const canUnlockSkill = (skillName: keyof typeof unlockedSkills) => {
     if (unlockedSkills[skillName]) return true; // Already unlocked
+
+    // Check if we have enough viruses to afford this skill
+    if (!canAffordSkill(skillName)) return false;
 
     // Find which column this skill belongs to
     const skillColumn = Object.entries(columnSkills).find(([_, skills]) =>
@@ -69,19 +78,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Automatically unlocks the lowest tech tier.
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.creepingSpawn
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("creepingSpawn")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("creepingSpawn")}
-                    disabled={!canUnlockSkill("creepingSpawn")}
-                  >
-                    {unlockedSkills.creepingSpawn ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("creepingSpawn")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.creepingSpawn
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("creepingSpawn")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.creepingSpawn && toggleSkill("creepingSpawn")}
+                      disabled={unlockedSkills.creepingSpawn || !canUnlockSkill("creepingSpawn")}
+                    >
+                      {unlockedSkills.creepingSpawn ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -91,19 +105,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     All existing nodes produce +10% passive data
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.bandwidthLeech
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("bandwidthLeech")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("bandwidthLeech")}
-                    disabled={!canUnlockSkill("bandwidthLeech")}
-                  >
-                    {unlockedSkills.bandwidthLeech ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("bandwidthLeech")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.bandwidthLeech
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("bandwidthLeech")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.bandwidthLeech && toggleSkill("bandwidthLeech")}
+                      disabled={unlockedSkills.bandwidthLeech || !canUnlockSkill("bandwidthLeech")}
+                    >
+                      {unlockedSkills.bandwidthLeech ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -113,19 +132,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Reduces virus costs by 20%
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.telemetryBoost
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("telemetryBoost")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("telemetryBoost")}
-                    disabled={!canUnlockSkill("telemetryBoost")}
-                  >
-                    {unlockedSkills.telemetryBoost ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("telemetryBoost")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.telemetryBoost
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("telemetryBoost")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.telemetryBoost && toggleSkill("telemetryBoost")}
+                      disabled={unlockedSkills.telemetryBoost || !canUnlockSkill("telemetryBoost")}
+                    >
+                      {unlockedSkills.telemetryBoost ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -135,19 +159,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Reduces debugging speed while increasing virus production
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.packetFragmentation
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("packetFragmentation")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("packetFragmentation")}
-                    disabled={!canUnlockSkill("packetFragmentation")}
-                  >
-                    {unlockedSkills.packetFragmentation ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("packetFragmentation")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.packetFragmentation
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("packetFragmentation")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.packetFragmentation && toggleSkill("packetFragmentation")}
+                      disabled={unlockedSkills.packetFragmentation || !canUnlockSkill("packetFragmentation")}
+                    >
+                      {unlockedSkills.packetFragmentation ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -172,19 +201,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     +5% data generation and +10% debugging speed
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.backdoorDividend
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("backdoorDividend")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("backdoorDividend")}
-                    disabled={!canUnlockSkill("backdoorDividend")}
-                  >
-                    {unlockedSkills.backdoorDividend ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("backdoorDividend")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.backdoorDividend
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("backdoorDividend")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.backdoorDividend && toggleSkill("backdoorDividend")}
+                      disabled={unlockedSkills.backdoorDividend || !canUnlockSkill("backdoorDividend")}
+                    >
+                      {unlockedSkills.backdoorDividend ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -192,19 +226,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Data generation scales with debugging speed
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.insideJob
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("insideJob")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("insideJob")}
-                    disabled={!canUnlockSkill("insideJob")}
-                  >
-                    {unlockedSkills.insideJob ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("insideJob")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.insideJob
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("insideJob")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.insideJob && toggleSkill("insideJob")}
+                      disabled={unlockedSkills.insideJob || !canUnlockSkill("insideJob")}
+                    >
+                      {unlockedSkills.insideJob ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -214,19 +253,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Reduces tech tier costs
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.dormantPayload
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("dormantPayload")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("dormantPayload")}
-                    disabled={!canUnlockSkill("dormantPayload")}
-                  >
-                    {unlockedSkills.dormantPayload ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("dormantPayload")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.dormantPayload
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("dormantPayload")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.dormantPayload && toggleSkill("dormantPayload")}
+                      disabled={unlockedSkills.dormantPayload || !canUnlockSkill("dormantPayload")}
+                    >
+                      {unlockedSkills.dormantPayload ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -236,19 +280,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Unlocking tech tier does not increase debugging speed
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.insiderAccess
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("insiderAccess")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("insiderAccess")}
-                    disabled={!canUnlockSkill("insiderAccess")}
-                  >
-                    {unlockedSkills.insiderAccess ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("insiderAccess")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.insiderAccess
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("insiderAccess")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.insiderAccess && toggleSkill("insiderAccess")}
+                      disabled={unlockedSkills.insiderAccess || !canUnlockSkill("insiderAccess")}
+                    >
+                      {unlockedSkills.insiderAccess ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -273,19 +322,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     +10% data generation per unlocked node
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.silentHarvest
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("silentHarvest")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("silentHarvest")}
-                    disabled={!canUnlockSkill("silentHarvest")}
-                  >
-                    {unlockedSkills.silentHarvest ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("silentHarvest")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.silentHarvest
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("silentHarvest")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.silentHarvest && toggleSkill("silentHarvest")}
+                      disabled={unlockedSkills.silentHarvest || !canUnlockSkill("silentHarvest")}
+                    >
+                      {unlockedSkills.silentHarvest ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -295,19 +349,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Increases the effectiveness of data creation
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.bandwidthOverload
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("bandwidthOverload")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("bandwidthOverload")}
-                    disabled={!canUnlockSkill("bandwidthOverload")}
-                  >
-                    {unlockedSkills.bandwidthOverload ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("bandwidthOverload")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.bandwidthOverload
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("bandwidthOverload")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.bandwidthOverload && toggleSkill("bandwidthOverload")}
+                      disabled={unlockedSkills.bandwidthOverload || !canUnlockSkill("bandwidthOverload")}
+                    >
+                      {unlockedSkills.bandwidthOverload ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -317,19 +376,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Reduces server upgrade costs
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.dataCompression
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("dataCompression")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("dataCompression")}
-                    disabled={!canUnlockSkill("dataCompression")}
-                  >
-                    {unlockedSkills.dataCompression ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("dataCompression")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.dataCompression
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("dataCompression")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.dataCompression && toggleSkill("dataCompression")}
+                      disabled={unlockedSkills.dataCompression || !canUnlockSkill("dataCompression")}
+                    >
+                      {unlockedSkills.dataCompression ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -339,19 +403,24 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                   <p className="text-sm text-gray-600">
                     Gradually increases data generation
                   </p>
-                  <button
-                    className={`mt-2 rounded px-3 py-1 text-sm font-medium transition-colors ${
-                      unlockedSkills.adaptiveSurveillance
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : canUnlockSkill("adaptiveSurveillance")
-                          ? "cursor-pointer bg-gray-400 text-white hover:bg-gray-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500"
-                    }`}
-                    onClick={() => toggleSkill("adaptiveSurveillance")}
-                    disabled={!canUnlockSkill("adaptiveSurveillance")}
-                  >
-                    {unlockedSkills.adaptiveSurveillance ? "In use" : "Locked"}
-                  </button>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("adaptiveSurveillance")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.adaptiveSurveillance
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("adaptiveSurveillance")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() => !unlockedSkills.adaptiveSurveillance && toggleSkill("adaptiveSurveillance")}
+                      disabled={unlockedSkills.adaptiveSurveillance || !canUnlockSkill("adaptiveSurveillance")}
+                    >
+                      {unlockedSkills.adaptiveSurveillance ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

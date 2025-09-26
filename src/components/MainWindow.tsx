@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useButton } from "../hooks/ButtonHook";
 // import { SkillTree } from "./SkillTree"; WALA NA TOH SINCE MANGGALING NA SA PARENT
 import { DataCenter, ServerUpgrades } from "./DataCenter";
-import { AntivirusWindow, AntivirusWarning } from "./AntiVirus";
+import { AntivirusWindow, AntivirusWarning } from "./Antivirus";
 import { GameWindow } from "../types/windows";
 import { Tier } from "./Tier";
 
@@ -14,6 +14,8 @@ type MainWindowProps = {
   windows: GameWindow[];
   setWindows: React.Dispatch<React.SetStateAction<GameWindow[]>>;
   SkillHook: ReturnType<typeof import("../hooks/SkillHook").useSkills>;
+  virusCount: number;
+  setVirusCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export function MainWindow({
@@ -21,9 +23,10 @@ export function MainWindow({
   onAddApp,
   windows,
   setWindows,
+  virusCount,
+  setVirusCount,
 }: MainWindowProps) {
   const {
-    virusCount,
     dataCount,
     virusCost,
     canBuyVirus,
@@ -39,7 +42,6 @@ export function MainWindow({
     dataMultiplier,
     virusMultiplier,
     setDataCount,
-    setVirusCount,
     packetCount,
     upgVirusCost,
     upgDataCost,
@@ -48,7 +50,7 @@ export function MainWindow({
     upgPacketLevel,
     upgDataLevel,
     upgVirusLevel,
-  } = useButton(SkillHook); // Pinasa sa ButtonHook.tsx
+  } = useButton(SkillHook, virusCount, setVirusCount); // Pass external virus count and setter
   // REMOVE Antivirus Software from initial state!
   const [warningShown, setWarningShown] = useState(false);
   const [tierShown, setTierShown] = useState(false);

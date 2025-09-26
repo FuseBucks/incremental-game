@@ -1,5 +1,29 @@
 import type { SkillState } from "../hooks/SkillHook";
 
+export interface SkillCosts {
+  [key: string]: number;
+}
+
+export const SKILL_COSTS: SkillCosts = {
+  // Worms Column - Earlier skills cost less
+  creepingSpawn: 5,
+  bandwidthLeech: 15,
+  telemetryBoost: 25,
+  packetFragmentation: 40,
+  
+  // Trojan Column - Balanced costs
+  backdoorDividend: 10,
+  insideJob: 20,
+  dormantPayload: 35,
+  insiderAccess: 50,
+  
+  // Spyware Column - Higher costs for powerful skills
+  silentHarvest: 12,
+  bandwidthOverload: 30,
+  adaptiveSurveillance: 45,
+  dataCompression: 60,
+};
+
 export interface SkillEffects {
   virusCostReduction: number;
   dataGenerationBonus: number;

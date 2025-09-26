@@ -8,7 +8,10 @@ import { ApplicationType } from "../types/windows";
 import { useSkills } from "../hooks/SkillHook"; // yipee
 
 export default function Home() {
-  const SkillHook = useSkills(); // Para may access parents tas pasa niya sa components. Para isang instance lang all throughout
+  // Initialize states that will be shared between hooks
+  const [virusCount, setVirusCount] = useState(0);
+  
+  const SkillHook = useSkills(virusCount, setVirusCount); // Pass virus count and setter
 
   const [application, setApplication] = useState<ApplicationType[]>([
     { id: "virus", title: "Virus" },
@@ -80,6 +83,8 @@ export default function Home() {
         onAddApp={handleApplication}
         windows={windows}
         setWindows={setWindows}
+        virusCount={virusCount}
+        setVirusCount={setVirusCount}
       />
       <div className="absolute top-7 left-1">
         {application.map((app, idx) => (
