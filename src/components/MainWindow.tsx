@@ -47,9 +47,14 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
   const [warningShown, setWarningShown] = useState(false);
   const [tierShown, setTierShown] = useState(false);
 
+  const [antivirusProgress, setAntivirusProgress] = useState(0);
+  const [antivirusActive, setAntivirusActive] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+
   // Show warning and antivirus windows only once when virusCount >= 10
   useEffect(() => {
     if (virusCount >= 10 && !warningShown) {
+      setAntivirusActive(true);
       setWindows((prev) => {
         const addIfMissing = (id: string, win: GameWindow) =>
           prev.some((p) => p.id === id) ? prev : [...prev, win];
@@ -89,6 +94,39 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
       setWarningShown(true);
     }
   }, [virusCount, warningShown, setWindows]);
+
+  // Antivirus progress effect
+  useEffect(() => {
+    if (!antivirusActive) return;
+    if (antivirusProgress >= 100) return;
+
+    // need balancing. draft also because its affected by skill trees and tiers
+    const interval = setInterval(() => {
+      setAntivirusProgress((prev) => Math.min(100, prev + 1)); 
+      console.log("Antivirus progress:", antivirusProgress);
+      setVirusCount((prev) => Math.max(0, prev - 1)); 
+      console.log("Virus count:", virusCount);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [antivirusActive, antivirusProgress, setVirusCount]);
+
+  // Alert when antivirus completes
+  useEffect(() => {
+    if (antivirusProgress >= 100) {
+      setAntivirusActive(false);
+      setGameOver(true);
+      setVirusCount(0);
+      setDataCount(0);
+      setWindows((prev) =>
+        prev.map((w) =>
+          w.id === "Antivirus Software"
+            ? { ...w, open: true }
+            : { ...w, open: false },
+        ),
+      );
+    }
+  }, [antivirusProgress, setVirusCount, setDataCount, setWindows]);
 
   useEffect(() => {
     setWindows((prev) =>
@@ -219,6 +257,7 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
                 )}
                 {w.id === "Antivirus Software" && (
                   <AntivirusWindow
+                    progress={antivirusProgress}
                     onClose={() =>
                       setWindows((prev) =>
                         prev.map((win) =>
@@ -296,6 +335,26 @@ export function MainWindow({ onAddApp, windows, setWindows }: MainWindowProps) {
                       setDataCount={setDataCount}
                       setVirusCount={setVirusCount}
                     />
+                  </div>
+                )}
+
+                {/* Game Over Modal */}
+                {gameOver && (
+                  <div className="bg-opacity-80 fixed inset-0 z-50 flex items-center justify-center bg-black">
+                    <div className="rounded bg-white p-8 text-center shadow-lg">
+                      <h2 className="mb-4 text-2xl font-bold text-red-700">
+                        Antivirus Complete!
+                      </h2>
+                      <p className="mb-4">
+                        ERVIRUS has been removed. You have lost the game.
+                      </p>
+                      <button
+                        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                        onClick={() => window.location.reload()}
+                      >
+                        Restart
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

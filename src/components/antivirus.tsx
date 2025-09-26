@@ -48,23 +48,7 @@ export function AntiVirusProgressBar({ progress }: { progress: number }) {
 }
 
 // This is the full Antivirus window, including progress logic
-export function AntivirusWindow({ onClose }: { onClose: () => void }) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    setProgress(0);
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
+export function AntivirusWindow({ progress, onClose }: { progress: number; onClose: () => void }) {
   return (
     <div className="m-2 flex flex-col gap-4">
       <div className="flex justify-center">
