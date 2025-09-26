@@ -6,22 +6,22 @@ export interface SkillCosts {
 
 export const SKILL_COSTS: SkillCosts = {
   // Worms Column - Earlier skills cost less
-  creepingSpawn: 5,
-  bandwidthLeech: 15,
-  telemetryBoost: 25,
-  packetFragmentation: 40,
+  creepingSpawn: 50,
+  protocolEfficiency: 150,
+  bandwidthLeech: 250,
+  replicationSurge: 400,
   
   // Trojan Column - Balanced costs
-  backdoorDividend: 10,
-  insideJob: 20,
-  dormantPayload: 35,
-  insiderAccess: 50,
+  backdoorDividend: 100,
+  dormantCache: 200,
+  insideJob: 0,
+  stealthBuffer: 0,
   
   // Spyware Column - Higher costs for powerful skills
-  silentHarvest: 12,
-  bandwidthOverload: 30,
-  adaptiveSurveillance: 45,
-  dataCompression: 60,
+  dataCompression: 120,
+  silentHarvest: 300,
+  adaptiveSurveillance: 450,
+  packetJammer: 600,
 };
 
 export interface SkillEffects {
@@ -30,8 +30,10 @@ export interface SkillEffects {
   virusGenerationBonus: number;
   serverUpgradeCostReduction: number;
   dataClickBonus: number;
-  autoUnlockServers: boolean;
+  autoUnlockMobileTier: boolean;
   debuggingSpeedReduction: number;
+  tierCostReduction: number;
+  virusDecayReduction: number;
 }
 
 export function calculateSkillEffects(
@@ -46,50 +48,66 @@ export function calculateSkillEffects(
   let serverUpgradeCostReduction = 0;
   let dataClickBonus = 0;
   let debuggingSpeedReduction = 0;
-  let autoUnlockServers = false;
+  let autoUnlockMobileTier = false;
+  let tierCostReduction = 0;
+  let virusDecayReduction = 0;
+
+  // Count total unlocked skills for cumulative effects
+  const unlockedSkillCount = Object.values(unlockedSkills).filter(Boolean).length;
 
   // Worms Skills
-  if (unlockedSkills.bandwidthLeech) {
-    dataGenerationBonus += 0.1; // +10% passive data
-  }
-  if (unlockedSkills.telemetryBoost) {
-    virusCostReduction += 0.2; // -20% virus costs
-  }
-  if (unlockedSkills.packetFragmentation) {
-    virusGenerationBonus += 0.15; // +15% virus production
-    debuggingSpeedReduction += 0.1; // +10% debugging speed
-  }
   if (unlockedSkills.creepingSpawn) {
-    autoUnlockServers = true; // Auto-unlock servers
+    autoUnlockMobileTier = true; // Auto-unlock mobile tier
+  }
+  if (unlockedSkills.protocolEfficiency) {
+    virusCostReduction += 0.15; // -15% virus costs (was +10% data generation)
+  }
+  if (unlockedSkills.bandwidthLeech) {
+    dataGenerationBonus += unlockedSkillCount * 0.12; // +12% passive data per unlocked skill
+  }
+  if (unlockedSkills.replicationSurge) {
+    debuggingSpeedReduction += 0.2; // -20% debugging speed
+    virusGenerationBonus += 0.3; // +30% virus replication
   }
 
   // Trojan Skills
   if (unlockedSkills.backdoorDividend) {
-    dataGenerationBonus += 0.05; // +5% data generation
-    debuggingSpeedReduction += 0.1; // +10% debugging speed
+    dataGenerationBonus += 0.06; // +6% total data generation
+    debuggingSpeedReduction += 0.08; // +8% debugging speed (note: this is additive with reduction)
+  }
+  if (unlockedSkills.dormantCache) {
+    // Reduces costs of technology tiers by 18%
+    tierCostReduction += 0.18; // -18% tier costs
   }
   if (unlockedSkills.insideJob) {
-    dataGenerationBonus += debuggingSpeedReduction; // data generation bonus based on debugging speed
+    // Data accumulation scales with debugging delay: +1.5% per second of delay
+    // This is complex to implement without a debugging delay system
+    // For now, apply a base bonus that increases with debugging speed reduction
+    const debuggingDelayBonus = debuggingSpeedReduction * 1.5;
+    dataGenerationBonus += debuggingDelayBonus;
   }
-  if (unlockedSkills.dormantPayload) {
-    serverUpgradeCostReduction += 0.15; // -15% server upgrade costs
+  if (unlockedSkills.stealthBuffer) {
+    // Reduces automatic virus decay by 30%
+    virusDecayReduction += 0.3; // -30% virus decay rate
   }
-  // insiderAccess: Ready for debugging speed mechanics when implemented
 
   // Spyware Skills
-  if (unlockedSkills.silentHarvest) {
-    const nodeCount = serverExist ? 1 : 0; // Only count if server exists (max 1)
-    dataGenerationBonus += nodeCount * 0.1; // +10% data generation per node
-  }
-  if (unlockedSkills.bandwidthOverload) {
-    dataClickBonus += virusCount; // data creation bonus based on virus count
-  }
   if (unlockedSkills.dataCompression) {
-    serverUpgradeCostReduction += 0.2; // -20% server upgrade costs
+    serverUpgradeCostReduction += 0.12; // -12% server upgrade costs
+  }
+  if (unlockedSkills.silentHarvest) {
+    // Each unlocked skill contributes +12% passive data cumulatively
+    dataGenerationBonus += unlockedSkillCount * 0.12; // +12% per unlocked skill
   }
   if (unlockedSkills.adaptiveSurveillance) {
-    // Base 12% + 2% per minute (level increases every minute when skill is active)
-    dataGenerationBonus += 0.12 + (adaptiveSurveillanceLevel * 0.02);
+    // Data accumulation grows over time: +1.5% per minute
+    dataGenerationBonus += adaptiveSurveillanceLevel * 0.015; // +1.5% per minute (level)
+  }
+  if (unlockedSkills.packetJammer) {
+    debuggingSpeedReduction += 0.25; // -25% debugging speed
+    // +18% packet production would need packet system integration
+    // For now, we can add a data generation bonus
+    dataGenerationBonus += 0.18; // Temporary implementation as data generation bonus
   }
 
   return {
@@ -98,7 +116,9 @@ export function calculateSkillEffects(
     virusGenerationBonus,
     serverUpgradeCostReduction,
     dataClickBonus,
-    autoUnlockServers,
+    autoUnlockMobileTier,
     debuggingSpeedReduction,
+    tierCostReduction,
+    virusDecayReduction,
   };
 }

@@ -37,7 +37,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-8">
       {/* Backdrop */}
       <div className="absolute inset-0" onClick={onClose} />
 
@@ -45,7 +45,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
       <div
         className="tab relative"
         style={{
-          width: "900px",
+          width: "1200px",
           height: "720px",
           cursor: "default",
         }}
@@ -106,10 +106,45 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">
+                    Protocol Efficiency
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Reduces virus costs by 15%
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("protocolEfficiency")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.protocolEfficiency
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("protocolEfficiency")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() =>
+                        !unlockedSkills.protocolEfficiency &&
+                        toggleSkill("protocolEfficiency")
+                      }
+                      disabled={
+                        unlockedSkills.protocolEfficiency ||
+                        !canUnlockSkill("protocolEfficiency")
+                      }
+                    >
+                      {unlockedSkills.protocolEfficiency
+                        ? "Unlocked"
+                        : "Unlock"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <h3 className="font-semibold text-gray-800">
                     Bandwidth Leech
                   </h3>
                   <p className="text-sm text-gray-600">
-                    All existing nodes produce +10% passive data
+                    All unlocked skills produce +12% passive data per tick
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -139,68 +174,34 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">
-                    Telemetry Boost
+                    Replication Surge
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Reduces virus costs by 20%
+                    Lowers debugging speed by 20% and raises virus replication
+                    by 30%
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("telemetryBoost")} viruses
+                      Cost: {getSkillCost("replicationSurge")} viruses
                     </span>
                     <button
                       className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.telemetryBoost
+                        unlockedSkills.replicationSurge
                           ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("telemetryBoost")
+                          : canUnlockSkill("replicationSurge")
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
                       onClick={() =>
-                        !unlockedSkills.telemetryBoost &&
-                        toggleSkill("telemetryBoost")
+                        !unlockedSkills.replicationSurge &&
+                        toggleSkill("replicationSurge")
                       }
                       disabled={
-                        unlockedSkills.telemetryBoost ||
-                        !canUnlockSkill("telemetryBoost")
+                        unlockedSkills.replicationSurge ||
+                        !canUnlockSkill("replicationSurge")
                       }
                     >
-                      {unlockedSkills.telemetryBoost ? "Unlocked" : "Unlock"}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                  <h3 className="font-semibold text-gray-800">
-                    Packet Fragmentation
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Reduces debugging speed while increasing virus production
-                  </p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("packetFragmentation")} viruses
-                    </span>
-                    <button
-                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.packetFragmentation
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("packetFragmentation")
-                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
-                            : "cursor-not-allowed bg-gray-300 text-gray-500"
-                      }`}
-                      onClick={() =>
-                        !unlockedSkills.packetFragmentation &&
-                        toggleSkill("packetFragmentation")
-                      }
-                      disabled={
-                        unlockedSkills.packetFragmentation ||
-                        !canUnlockSkill("packetFragmentation")
-                      }
-                    >
-                      {unlockedSkills.packetFragmentation
-                        ? "Unlocked"
-                        : "Unlock"}
+                      {unlockedSkills.replicationSurge ? "Unlocked" : "Unlock"}
                     </button>
                   </div>
                 </div>
@@ -225,7 +226,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                     Backdoor Dividend
                   </h3>
                   <p className="text-sm text-gray-600">
-                    +5% data generation and +10% debugging speed
+                    +6% total data generation and +8% debugging speed
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -254,9 +255,41 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <h3 className="font-semibold text-gray-800">Dormant Cache</h3>
+                  <p className="text-sm text-gray-600">
+                    Reduces costs of technology tiers by 18%
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("dormantCache")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.dormantCache
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("dormantCache")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() =>
+                        !unlockedSkills.dormantCache &&
+                        toggleSkill("dormantCache")
+                      }
+                      disabled={
+                        unlockedSkills.dormantCache ||
+                        !canUnlockSkill("dormantCache")
+                      }
+                    >
+                      {unlockedSkills.dormantCache ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">Inside Job</h3>
                   <p className="text-sm text-gray-600">
-                    Data generation scales with debugging speed
+                    Data accumulation scales with debugging delay: +1.5% per
+                    second of delay
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -284,66 +317,33 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">
-                    Dormant Payload
+                    Stealth Buffer
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Reduces tech tier costs
+                    Reduces automatic virus decay by 30%
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("dormantPayload")} viruses
+                      Cost: {getSkillCost("stealthBuffer")} viruses
                     </span>
                     <button
                       className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.dormantPayload
+                        unlockedSkills.stealthBuffer
                           ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("dormantPayload")
+                          : canUnlockSkill("stealthBuffer")
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
                       onClick={() =>
-                        !unlockedSkills.dormantPayload &&
-                        toggleSkill("dormantPayload")
+                        !unlockedSkills.stealthBuffer &&
+                        toggleSkill("stealthBuffer")
                       }
                       disabled={
-                        unlockedSkills.dormantPayload ||
-                        !canUnlockSkill("dormantPayload")
+                        unlockedSkills.stealthBuffer ||
+                        !canUnlockSkill("stealthBuffer")
                       }
                     >
-                      {unlockedSkills.dormantPayload ? "Unlocked" : "Unlock"}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                  <h3 className="font-semibold text-gray-800">
-                    Insider Access
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Unlocking tech tier does not increase debugging speed
-                  </p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("insiderAccess")} viruses
-                    </span>
-                    <button
-                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.insiderAccess
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("insiderAccess")
-                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
-                            : "cursor-not-allowed bg-gray-300 text-gray-500"
-                      }`}
-                      onClick={() =>
-                        !unlockedSkills.insiderAccess &&
-                        toggleSkill("insiderAccess")
-                      }
-                      disabled={
-                        unlockedSkills.insiderAccess ||
-                        !canUnlockSkill("insiderAccess")
-                      }
-                    >
-                      {unlockedSkills.insiderAccess ? "Unlocked" : "Unlock"}
+                      {unlockedSkills.stealthBuffer ? "Unlocked" : "Unlock"}
                     </button>
                   </div>
                 </div>
@@ -365,76 +365,10 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">
-                    Silent Harvest
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    +10% data generation per unlocked node
-                  </p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("silentHarvest")} viruses
-                    </span>
-                    <button
-                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.silentHarvest
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("silentHarvest")
-                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
-                            : "cursor-not-allowed bg-gray-300 text-gray-500"
-                      }`}
-                      onClick={() =>
-                        !unlockedSkills.silentHarvest &&
-                        toggleSkill("silentHarvest")
-                      }
-                      disabled={
-                        unlockedSkills.silentHarvest ||
-                        !canUnlockSkill("silentHarvest")
-                      }
-                    >
-                      {unlockedSkills.silentHarvest ? "Unlocked" : "Unlock"}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                  <h3 className="font-semibold text-gray-800">
-                    Bandwidth Overload
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Increases the effectiveness of data creation
-                  </p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      Cost: {getSkillCost("bandwidthOverload")} viruses
-                    </span>
-                    <button
-                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-                        unlockedSkills.bandwidthOverload
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : canUnlockSkill("bandwidthOverload")
-                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
-                            : "cursor-not-allowed bg-gray-300 text-gray-500"
-                      }`}
-                      onClick={() =>
-                        !unlockedSkills.bandwidthOverload &&
-                        toggleSkill("bandwidthOverload")
-                      }
-                      disabled={
-                        unlockedSkills.bandwidthOverload ||
-                        !canUnlockSkill("bandwidthOverload")
-                      }
-                    >
-                      {unlockedSkills.bandwidthOverload ? "Unlocked" : "Unlock"}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                  <h3 className="font-semibold text-gray-800">
                     Data Compression
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Reduces server upgrade costs
+                    Reduces server upgrade costs by 12%
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -464,10 +398,44 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
 
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <h3 className="font-semibold text-gray-800">
+                    Silent Harvest
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Each unlocked skill contributes +12% passive data
+                    cumulatively
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("silentHarvest")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.silentHarvest
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("silentHarvest")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() =>
+                        !unlockedSkills.silentHarvest &&
+                        toggleSkill("silentHarvest")
+                      }
+                      disabled={
+                        unlockedSkills.silentHarvest ||
+                        !canUnlockSkill("silentHarvest")
+                      }
+                    >
+                      {unlockedSkills.silentHarvest ? "Unlocked" : "Unlock"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <h3 className="font-semibold text-gray-800">
                     Adaptive Surveillance
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Gradually increases data generation
+                    Data accumulation grows over time: +1.5% per minute.
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -493,6 +461,38 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                       {unlockedSkills.adaptiveSurveillance
                         ? "Unlocked"
                         : "Unlock"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <h3 className="font-semibold text-gray-800">Packet Jammer</h3>
+                  <p className="text-sm text-gray-600">
+                    Lowers debugging speed by 25% and increases packet
+                    production by 18%.
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      Cost: {getSkillCost("packetJammer")} viruses
+                    </span>
+                    <button
+                      className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                        unlockedSkills.packetJammer
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : canUnlockSkill("packetJammer")
+                            ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                      }`}
+                      onClick={() =>
+                        !unlockedSkills.packetJammer &&
+                        toggleSkill("packetJammer")
+                      }
+                      disabled={
+                        unlockedSkills.packetJammer ||
+                        !canUnlockSkill("packetJammer")
+                      }
+                    >
+                      {unlockedSkills.packetJammer ? "Unlocked" : "Unlock"}
                     </button>
                   </div>
                 </div>

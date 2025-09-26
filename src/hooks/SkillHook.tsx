@@ -4,17 +4,17 @@ import { SKILL_COSTS } from "../util/skills";
 
 export interface SkillState {
   creepingSpawn: boolean;
+  protocolEfficiency: boolean;
   bandwidthLeech: boolean;
-  telemetryBoost: boolean;
-  packetFragmentation: boolean;
+  replicationSurge: boolean;
   backdoorDividend: boolean;
+  dormantCache: boolean;
   insideJob: boolean;
-  dormantPayload: boolean;
-  insiderAccess: boolean;
-  silentHarvest: boolean;
-  bandwidthOverload: boolean;
-  adaptiveSurveillance: boolean;
+  stealthBuffer: boolean;
   dataCompression: boolean;
+  silentHarvest: boolean;
+  adaptiveSurveillance: boolean;
+  packetJammer: boolean;
 }
 
 export function useSkills(
@@ -28,24 +28,24 @@ export function useSkills(
   // Skill tree state
   const [unlockedSkills, setUnlockedSkills] = useState<SkillState>({
     creepingSpawn: false,
+    protocolEfficiency: false,
     bandwidthLeech: false,
-    telemetryBoost: false,
-    packetFragmentation: false,
+    replicationSurge: false,
     backdoorDividend: false,
+    dormantCache: false,
     insideJob: false,
-    dormantPayload: false,
-    insiderAccess: false,
-    silentHarvest: false,
-    bandwidthOverload: false,
-    adaptiveSurveillance: false,
+    stealthBuffer: false,
     dataCompression: false,
+    silentHarvest: false,
+    adaptiveSurveillance: false,
+    packetJammer: false,
   });
 
   // Define which skills belong to which column
   const columnSkills = {
-    worms: ['creepingSpawn', 'bandwidthLeech', 'telemetryBoost', 'packetFragmentation'],
-    trojan: ['backdoorDividend', 'insideJob', 'dormantPayload', 'insiderAccess'],
-    spyware: ['silentHarvest', 'bandwidthOverload', 'adaptiveSurveillance', 'dataCompression']
+    worms: ['creepingSpawn', 'protocolEfficiency', 'bandwidthLeech', 'replicationSurge'],
+    trojan: ['backdoorDividend', 'dormantCache', 'insideJob', 'stealthBuffer'],
+    spyware: ['dataCompression', 'silentHarvest', 'adaptiveSurveillance', 'packetJammer']
   } as const;
 
   // Column multipliers based on selected skill tree
