@@ -3,13 +3,17 @@ export function Applications({
   id,
   title,
   toggleWindow,
+  isOpen,
 }: {
   id: string;
   title: string;
   toggleWindow: (id: string) => void;
+  isOpen: boolean;
 }) {
   function handleOpenWindow() {
-    toggleWindow(id);
+    if (!isOpen) {
+      toggleWindow(id);
+    }
   }
 
   return (

@@ -55,3 +55,32 @@ button:active {
     0 2px 0 0 #fff inset,
     0 1px 2px 0 #0003;
 }
+
+.close-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 18px;
+  background: linear-gradient(to bottom, #ef4343 0%, #d73c3c 100%);
+  border: 1px solid #a0302e;
+  border-radius: 2px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: inset 1px 1px 0 #ff6b6b;
+}
+
+.close-button:hover {
+  background: linear-gradient(to bottom, #f55555 0%, #e44444 100%);
+}
+
+.close-button:active {
+  background: linear-gradient(to bottom, #d73c3c 0%, #ef4343 100%);
+  box-shadow: inset -1px -1px 0 #ff6b6b;
+}

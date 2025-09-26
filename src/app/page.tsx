@@ -10,7 +10,7 @@ import { useSkills } from "../hooks/SkillHook"; // yipee
 export default function Home() {
   // Initialize states that will be shared between hooks
   const [virusCount, setVirusCount] = useState(0);
-  
+
   const SkillHook = useSkills(virusCount, setVirusCount); // Pass virus count and setter
 
   const [application, setApplication] = useState<ApplicationType[]>([
@@ -93,6 +93,7 @@ export default function Home() {
             id={app.id}
             title={app.title}
             toggleWindow={toggleWindow}
+            isOpen={windows.find((w) => w.id === app.id)?.open || false}
           />
         ))}
       </div>

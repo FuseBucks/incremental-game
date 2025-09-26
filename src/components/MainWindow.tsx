@@ -246,6 +246,20 @@ export function MainWindow({
               onMouseDown={(e) => handleMouseDown(w.id, e)}
             >
               <div className="font-sans">{w.title}</div>
+              <button
+                className="close-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setWindows((prev) =>
+                    prev.map((win) =>
+                      win.id === w.id ? { ...win, open: false } : win,
+                    ),
+                  );
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                ×
+              </button>
               <div
                 className={`tab-internal pointer-events-auto cursor-auto ${
                   w.id === "data-center" ? "bg-amber-400" : ""
