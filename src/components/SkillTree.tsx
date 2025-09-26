@@ -9,13 +9,13 @@ interface SkillTreeProps {
 }
 
 export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
-  const { 
-    unlockedSkills, 
-    toggleSkill, 
-    selectedSkillColumn, 
-    columnSkills, 
-    canAffordSkill, 
-    getSkillCost 
+  const {
+    unlockedSkills,
+    toggleSkill,
+    selectedSkillColumn,
+    columnSkills,
+    canAffordSkill,
+    getSkillCost,
   } = SkillHook;
 
   if (!isOpen) return null;
@@ -63,7 +63,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
               >
                 <h4 className="group relative cursor-help border-b pb-2 text-center text-lg font-bold text-gray-800">
                   Worms
-                  <span className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100">
                     Self-replicating programs that spread across networks
                     automatically
                     <br />
@@ -90,8 +90,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.creepingSpawn && toggleSkill("creepingSpawn")}
-                      disabled={unlockedSkills.creepingSpawn || !canUnlockSkill("creepingSpawn")}
+                      onClick={() =>
+                        !unlockedSkills.creepingSpawn &&
+                        toggleSkill("creepingSpawn")
+                      }
+                      disabled={
+                        unlockedSkills.creepingSpawn ||
+                        !canUnlockSkill("creepingSpawn")
+                      }
                     >
                       {unlockedSkills.creepingSpawn ? "Unlocked" : "Unlock"}
                     </button>
@@ -117,8 +123,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.bandwidthLeech && toggleSkill("bandwidthLeech")}
-                      disabled={unlockedSkills.bandwidthLeech || !canUnlockSkill("bandwidthLeech")}
+                      onClick={() =>
+                        !unlockedSkills.bandwidthLeech &&
+                        toggleSkill("bandwidthLeech")
+                      }
+                      disabled={
+                        unlockedSkills.bandwidthLeech ||
+                        !canUnlockSkill("bandwidthLeech")
+                      }
                     >
                       {unlockedSkills.bandwidthLeech ? "Unlocked" : "Unlock"}
                     </button>
@@ -144,8 +156,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.telemetryBoost && toggleSkill("telemetryBoost")}
-                      disabled={unlockedSkills.telemetryBoost || !canUnlockSkill("telemetryBoost")}
+                      onClick={() =>
+                        !unlockedSkills.telemetryBoost &&
+                        toggleSkill("telemetryBoost")
+                      }
+                      disabled={
+                        unlockedSkills.telemetryBoost ||
+                        !canUnlockSkill("telemetryBoost")
+                      }
                     >
                       {unlockedSkills.telemetryBoost ? "Unlocked" : "Unlock"}
                     </button>
@@ -171,10 +189,18 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.packetFragmentation && toggleSkill("packetFragmentation")}
-                      disabled={unlockedSkills.packetFragmentation || !canUnlockSkill("packetFragmentation")}
+                      onClick={() =>
+                        !unlockedSkills.packetFragmentation &&
+                        toggleSkill("packetFragmentation")
+                      }
+                      disabled={
+                        unlockedSkills.packetFragmentation ||
+                        !canUnlockSkill("packetFragmentation")
+                      }
                     >
-                      {unlockedSkills.packetFragmentation ? "Unlocked" : "Unlock"}
+                      {unlockedSkills.packetFragmentation
+                        ? "Unlocked"
+                        : "Unlock"}
                     </button>
                   </div>
                 </div>
@@ -186,7 +212,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
               >
                 <h4 className="group relative cursor-help border-b pb-2 text-center text-lg font-bold text-gray-800">
                   Trojan
-                  <span className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100">
                     Disguised malware that appears harmless but steals data
                     secretly
                     <br />
@@ -213,8 +239,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.backdoorDividend && toggleSkill("backdoorDividend")}
-                      disabled={unlockedSkills.backdoorDividend || !canUnlockSkill("backdoorDividend")}
+                      onClick={() =>
+                        !unlockedSkills.backdoorDividend &&
+                        toggleSkill("backdoorDividend")
+                      }
+                      disabled={
+                        unlockedSkills.backdoorDividend ||
+                        !canUnlockSkill("backdoorDividend")
+                      }
                     >
                       {unlockedSkills.backdoorDividend ? "Unlocked" : "Unlock"}
                     </button>
@@ -238,8 +270,12 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.insideJob && toggleSkill("insideJob")}
-                      disabled={unlockedSkills.insideJob || !canUnlockSkill("insideJob")}
+                      onClick={() =>
+                        !unlockedSkills.insideJob && toggleSkill("insideJob")
+                      }
+                      disabled={
+                        unlockedSkills.insideJob || !canUnlockSkill("insideJob")
+                      }
                     >
                       {unlockedSkills.insideJob ? "Unlocked" : "Unlock"}
                     </button>
@@ -265,8 +301,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.dormantPayload && toggleSkill("dormantPayload")}
-                      disabled={unlockedSkills.dormantPayload || !canUnlockSkill("dormantPayload")}
+                      onClick={() =>
+                        !unlockedSkills.dormantPayload &&
+                        toggleSkill("dormantPayload")
+                      }
+                      disabled={
+                        unlockedSkills.dormantPayload ||
+                        !canUnlockSkill("dormantPayload")
+                      }
                     >
                       {unlockedSkills.dormantPayload ? "Unlocked" : "Unlock"}
                     </button>
@@ -292,8 +334,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.insiderAccess && toggleSkill("insiderAccess")}
-                      disabled={unlockedSkills.insiderAccess || !canUnlockSkill("insiderAccess")}
+                      onClick={() =>
+                        !unlockedSkills.insiderAccess &&
+                        toggleSkill("insiderAccess")
+                      }
+                      disabled={
+                        unlockedSkills.insiderAccess ||
+                        !canUnlockSkill("insiderAccess")
+                      }
                     >
                       {unlockedSkills.insiderAccess ? "Unlocked" : "Unlock"}
                     </button>
@@ -307,7 +355,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
               >
                 <h4 className="group relative cursor-help border-b pb-2 text-center text-lg font-bold text-gray-800">
                   Spyware
-                  <span className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 transform rounded bg-black px-3 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100">
                     Surveillance software that monitors and collects user
                     information
                     <br />
@@ -334,8 +382,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.silentHarvest && toggleSkill("silentHarvest")}
-                      disabled={unlockedSkills.silentHarvest || !canUnlockSkill("silentHarvest")}
+                      onClick={() =>
+                        !unlockedSkills.silentHarvest &&
+                        toggleSkill("silentHarvest")
+                      }
+                      disabled={
+                        unlockedSkills.silentHarvest ||
+                        !canUnlockSkill("silentHarvest")
+                      }
                     >
                       {unlockedSkills.silentHarvest ? "Unlocked" : "Unlock"}
                     </button>
@@ -361,8 +415,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.bandwidthOverload && toggleSkill("bandwidthOverload")}
-                      disabled={unlockedSkills.bandwidthOverload || !canUnlockSkill("bandwidthOverload")}
+                      onClick={() =>
+                        !unlockedSkills.bandwidthOverload &&
+                        toggleSkill("bandwidthOverload")
+                      }
+                      disabled={
+                        unlockedSkills.bandwidthOverload ||
+                        !canUnlockSkill("bandwidthOverload")
+                      }
                     >
                       {unlockedSkills.bandwidthOverload ? "Unlocked" : "Unlock"}
                     </button>
@@ -388,8 +448,14 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.dataCompression && toggleSkill("dataCompression")}
-                      disabled={unlockedSkills.dataCompression || !canUnlockSkill("dataCompression")}
+                      onClick={() =>
+                        !unlockedSkills.dataCompression &&
+                        toggleSkill("dataCompression")
+                      }
+                      disabled={
+                        unlockedSkills.dataCompression ||
+                        !canUnlockSkill("dataCompression")
+                      }
                     >
                       {unlockedSkills.dataCompression ? "Unlocked" : "Unlock"}
                     </button>
@@ -415,10 +481,18 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                             ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
                             : "cursor-not-allowed bg-gray-300 text-gray-500"
                       }`}
-                      onClick={() => !unlockedSkills.adaptiveSurveillance && toggleSkill("adaptiveSurveillance")}
-                      disabled={unlockedSkills.adaptiveSurveillance || !canUnlockSkill("adaptiveSurveillance")}
+                      onClick={() =>
+                        !unlockedSkills.adaptiveSurveillance &&
+                        toggleSkill("adaptiveSurveillance")
+                      }
+                      disabled={
+                        unlockedSkills.adaptiveSurveillance ||
+                        !canUnlockSkill("adaptiveSurveillance")
+                      }
                     >
-                      {unlockedSkills.adaptiveSurveillance ? "Unlocked" : "Unlock"}
+                      {unlockedSkills.adaptiveSurveillance
+                        ? "Unlocked"
+                        : "Unlock"}
                     </button>
                   </div>
                 </div>
