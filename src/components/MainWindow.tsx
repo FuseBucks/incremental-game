@@ -169,16 +169,16 @@ export function MainWindow({
     );
   }, [showServerUpgrades, setWindows]);
 
-  // Show tier window when data >= 50 and virus >= 30
+  // Show tier window when upgVirusLevel >= 5
   useEffect(() => {
-    if (dataCount >= 1 && virusCount >= 0 && !tierShown) {
+    if (upgVirusLevel >= 5 && !tierShown) {
       setWindows((prev) =>
         prev.map((w) => (w.id === "tier" ? { ...w, open: true } : w)),
       );
       onAddApp({ id: "tier", title: "Tier" });
       setTierShown(true);
     }
-  }, [dataCount, virusCount, tierShown, setWindows, onAddApp]);
+  }, [upgVirusLevel, tierShown, setWindows, onAddApp]);
 
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });

@@ -31,38 +31,38 @@ export function Tier({
   setDataCount,
   setVirusCount,
   skillEffects,
-  onMobileTierAcquired
+  onMobileTierAcquired,
 }: TierProps) {
   const [tiers, setTiers] = useState<TierDetails[]>([
     {
       id: "mobile",
       name: "Mobile Tier",
-      dataCost: 1,
-      virusCost: 1,
-      multiplier: 3,
+      dataCost: 100000,
+      virusCost: 1500,
+      multiplier: 2,
       acquired: false,
     },
     {
       id: "pc",
       name: "PC Tier",
-      dataCost: 500,
-      virusCost: 200,
+      dataCost: 350000,
+      virusCost: 3000,
       multiplier: 5,
       acquired: false,
     },
     {
       id: "server",
       name: "Server Tier",
-      dataCost: 2000,
-      virusCost: 800,
+      dataCost: 700000,
+      virusCost: 15000,
       multiplier: 10,
       acquired: false,
     },
     {
       id: "nasa",
       name: "NASA Tier",
-      dataCost: 10000,
-      virusCost: 5000,
+      dataCost: 10000000,
+      virusCost: 50000,
       multiplier: 25,
       acquired: false,
     },
@@ -71,11 +71,11 @@ export function Tier({
   // Auto-unlock mobile tier when Creeping Spawn skill is active
   useEffect(() => {
     if (skillEffects.autoUnlockMobileTier) {
-      const mobileTier = tiers.find(t => t.id === "mobile");
+      const mobileTier = tiers.find((t) => t.id === "mobile");
       if (mobileTier && !mobileTier.acquired) {
         console.log("Auto-unlocking mobile tier due to Creeping Spawn skill");
-        setTiers(prev => 
-          prev.map(t => t.id === "mobile" ? { ...t, acquired: true } : t)
+        setTiers((prev) =>
+          prev.map((t) => (t.id === "mobile" ? { ...t, acquired: true } : t)),
         );
         setMultiplierValue(3); // Mobile tier has 3x multiplier
         // Don't deduct costs when unlocked via skill
@@ -85,9 +85,13 @@ export function Tier({
 
   function handlePurchase(tier: TierDetails) {
     // Apply tier cost reduction from Dormant Cache skill
-    const effectiveDataCost = Math.floor(tier.dataCost * (1 - skillEffects.tierCostReduction));
-    const effectiveVirusCost = Math.floor(tier.virusCost * (1 - skillEffects.tierCostReduction));
-    
+    const effectiveDataCost = Math.floor(
+      tier.dataCost * (1 - skillEffects.tierCostReduction),
+    );
+    const effectiveVirusCost = Math.floor(
+      tier.virusCost * (1 - skillEffects.tierCostReduction),
+    );
+
     if (dataCount >= effectiveDataCost && virusCount >= effectiveVirusCost) {
       setTiers((prev) =>
         prev.map((t) => (t.id === tier.id ? { ...t, acquired: true } : t)),
@@ -97,7 +101,7 @@ export function Tier({
       setVirusCount((prev) => prev - effectiveVirusCost);
     }
 
-     if (tier.id === "mobile" && !tier.acquired && onMobileTierAcquired) {
+    if (tier.id === "mobile" && !tier.acquired && onMobileTierAcquired) {
       onMobileTierAcquired();
     }
   }
@@ -117,9 +121,13 @@ export function Tier({
       <div className="space-y-4">
         {tiers.map((tier, index) => {
           // Apply tier cost reduction from Dormant Cache skill
-          const effectiveDataCost = Math.floor(tier.dataCost * (1 - skillEffects.tierCostReduction));
-          const effectiveVirusCost = Math.floor(tier.virusCost * (1 - skillEffects.tierCostReduction));
-          
+          const effectiveDataCost = Math.floor(
+            tier.dataCost * (1 - skillEffects.tierCostReduction),
+          );
+          const effectiveVirusCost = Math.floor(
+            tier.virusCost * (1 - skillEffects.tierCostReduction),
+          );
+
           const canAfford =
             dataCount >= effectiveDataCost && virusCount >= effectiveVirusCost;
           const prevTierAcquired = index === 0 || tiers[index - 1].acquired;
