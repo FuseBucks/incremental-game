@@ -48,6 +48,9 @@ interface ServerUpgradesProps {
   upgVirusLevel: number;
   upgDataLevel: number;
   upgPacketLevel: number;
+  skillEffects: {
+    serverUpgradeCostReduction: number;
+  };
 }
 
 export function ServerUpgrades({
@@ -59,12 +62,14 @@ export function ServerUpgrades({
   upgVirusLevel,
   upgDataLevel,
   upgPacketLevel,
+  skillEffects,
 }: ServerUpgradesProps) {
   const upgObject: {
     [key: string]: {
       name: string;
       level: number;
       cost: number;
+      effectiveCost: number;
       type: string;
     };
   } = {
@@ -72,18 +77,21 @@ export function ServerUpgrades({
       name: "Virus",
       level: upgVirusLevel,
       cost: upgVirusCost,
+      effectiveCost: Math.floor(upgVirusCost * (1 - skillEffects.serverUpgradeCostReduction)),
       type: "virus",
     },
     data: {
       name: "Data",
       level: upgDataLevel,
       cost: upgDataCost,
+      effectiveCost: Math.floor(upgDataCost * (1 - skillEffects.serverUpgradeCostReduction)),
       type: "data",
     },
     packet: {
       name: "Packet",
       level: upgPacketLevel,
       cost: upgPacketCost,
+      effectiveCost: Math.floor(upgPacketCost * (1 - skillEffects.serverUpgradeCostReduction)),
       type: "packet",
     },
   };
@@ -97,7 +105,7 @@ export function ServerUpgrades({
 
         <div className="flex flex-col justify-between">
           {Object.entries(upgObject).map(([key, upg]) => {
-            const canBuy = packetCount >= upg.cost;
+            const canBuy = packetCount >= upg.effectiveCost;
 
             return (
               <button
@@ -115,19 +123,19 @@ export function ServerUpgrades({
                   {upg.level === 0 ? (
                     <div className="flex flex-col items-center">
                       <div className="text-gray-500">Locked</div>
-                      <div>Cost: {upg.cost} Packets</div>
+                      <div>Cost: {upg.effectiveCost} Packets</div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center">
                       <div>Level: {upg.level}</div>
-                      <div>Cost: {upg.cost} Packets</div>
+                      <div>Cost: {upg.effectiveCost} Packets</div>
                     </div>
                   )}
                 </span>
 
                 <span className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 rounded bg-black px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:block group-hover:bg-black group-hover:opacity-100">
                   {!canBuy
-                    ? `Need ${upg.cost - packetCount} more packets`
+                    ? `Need ${upg.effectiveCost - packetCount} more packets`
                     : upg.level === 0
                       ? `Unlock ${upg.name} upgrade`
                       : `Upgrade ${upg.name} to level ${upg.level + 1}`}

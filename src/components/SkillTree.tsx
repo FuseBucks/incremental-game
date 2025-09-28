@@ -226,7 +226,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                     Backdoor Dividend
                   </h3>
                   <p className="text-sm text-gray-600">
-                    +6% total data generation and +8% debugging speed
+                    +6% total virus production and +8% debugging speed
                   </p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">
@@ -401,7 +401,7 @@ export function SkillTree({ isOpen, onClose, SkillHook }: SkillTreeProps) {
                     Silent Harvest
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Each unlocked skill contributes +12% passive data
+                    Each unlocked skill contributes +12% virus production
                     cumulatively
                   </p>
                   <div className="mt-2 flex items-center justify-between">

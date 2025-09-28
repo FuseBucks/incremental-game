@@ -52,15 +52,17 @@ export function useSkills(
   const getColumnMultipliers = () => {
     let virusGenMultiplier = 1;
     let dataGenMultiplier = 1;
+    let debuggingSpeedMultiplier = 1; // Base debugging speed multiplier
     
     if (selectedSkillColumn === 'worms') {
       virusGenMultiplier = 2; // x2 Virus Generation
     } else if (selectedSkillColumn === 'spyware') {
       dataGenMultiplier = 2; // x2 Data Generation
+    } else if (selectedSkillColumn === 'trojan') {
+      debuggingSpeedMultiplier = 1.5; // +50% debugging speed reduction (slows debugging by 50%)
     }
-    // Trojan doesn't have a base multiplier, it slows debugging instead
     
-    return { virusGenMultiplier, dataGenMultiplier };
+    return { virusGenMultiplier, dataGenMultiplier, debuggingSpeedMultiplier };
   };
 
   const toggleSkill = (skillName: keyof SkillState) => {
@@ -129,7 +131,7 @@ export function useSkills(
       const interval = setInterval(() => {
         setAdaptiveSurveillanceLevel((prev) => {
           const newLevel = prev + 1;
-          console.log(`Adaptive Surveillance upgraded to level ${newLevel}! Data generation bonus: +${(0.12 + newLevel * 0.02) * 100}%`);
+          console.log(`Adaptive Surveillance upgraded to level ${newLevel}! Data generation bonus: +${(newLevel * 1.5).toFixed(1)}% (cumulative)`);
           return newLevel;
         });
       }, 60000); // 60,000ms = 1 minute

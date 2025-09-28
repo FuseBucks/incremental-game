@@ -24,7 +24,7 @@ export function useButton(
 
   // Use the skills passed in (single source of truth)
   // const skills = useSkills();  // removed
-  const { virusGenMultiplier, dataGenMultiplier } =
+  const { virusGenMultiplier, dataGenMultiplier, debuggingSpeedMultiplier } =
     SkillHook.getColumnMultipliers();
 
   // server states
@@ -60,6 +60,7 @@ export function useButton(
     upgPacketMultiplier,
     virusGenMultiplier,
     dataGenMultiplier,
+    debuggingSpeedMultiplier,
     upgVirusLevel,
   });
 
@@ -85,6 +86,7 @@ export function useButton(
       upgPacketMultiplier,
       virusGenMultiplier,
       dataGenMultiplier,
+      debuggingSpeedMultiplier,
       upgVirusLevel,
     };
   }, [
@@ -95,6 +97,7 @@ export function useButton(
     upgPacketMultiplier,
     virusGenMultiplier,
     dataGenMultiplier,
+    debuggingSpeedMultiplier,
     upgVirusLevel,
   ]);
 
@@ -140,7 +143,7 @@ export function useButton(
     if (dataCount >= currentCost) {
       setVirusCount((prevVirus) => prevVirus + 1);
       setDataCount((prevData) => prevData - currentCost);
-      setVirusCost((prevCost) => Math.floor(prevCost * 1.5));
+      setVirusCost((prevCost) => Math.floor(prevCost * 1.1));
     }
   };
 
@@ -217,7 +220,7 @@ export function useButton(
             console.log("Virus Generation per Second:", finalGeneration);
             console.log("========================");
 
-            const newVirusCount = Math.floor(prev + finalGeneration);
+            const newVirusCount = prev + finalGeneration;
             virusCountRef.current = newVirusCount; // Update ref immediately for data generation
             return newVirusCount;
           });
@@ -262,15 +265,18 @@ export function useButton(
             console.log("Data Generation per Second:", finalGeneration);
             console.log("=======================");
 
-            return Math.floor(prev + finalGeneration);
+            return prev + finalGeneration;
           });
         }
 
         // Update packet count
         if (currentServerExist) {
-          setPacketCount((prev) =>
-            Math.floor(prev + 1 * currentMultipliers.upgPacketMultiplier),
-          );
+          setPacketCount((prev) => {
+            const baseGeneration = 1 * currentMultipliers.upgPacketMultiplier;
+            const skillBonusMultiplier = 1 + currentSkillEffects.packetGenerationBonus;
+            const finalGeneration = baseGeneration * skillBonusMultiplier;
+            return prev + finalGeneration;
+          });
           console.log("spc test:", currentMultipliers.upgPacketMultiplier);
         }
       }, 1000);
@@ -395,6 +401,7 @@ export function useButton(
     upgPacketLevel,
 
     skillEffects,
+    debuggingSpeedMultiplier,
     // Expose skills functionality
     ...SkillHook,
   };
