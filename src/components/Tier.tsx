@@ -79,9 +79,14 @@ export function Tier({
         );
         setMultiplierValue(3); // Mobile tier has 3x multiplier
         // Don't deduct costs when unlocked via skill
+        
+        // Trigger the antivirus sequence when auto-unlocked
+        if (onMobileTierAcquired) {
+          onMobileTierAcquired();
+        }
       }
     }
-  }, [skillEffects.autoUnlockMobileTier, setMultiplierValue]);
+  }, [skillEffects.autoUnlockMobileTier, setMultiplierValue, onMobileTierAcquired, tiers]);
 
   function handlePurchase(tier: TierDetails) {
     // Apply tier cost reduction from Dormant Cache skill

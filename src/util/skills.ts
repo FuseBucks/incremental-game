@@ -59,7 +59,8 @@ export function calculateSkillEffects(
 
   // Worms Skills
   if (unlockedSkills.creepingSpawn) {
-    // Creeping Spawn no longer auto-unlocks mobile tier
+    // Creeping Spawn auto-unlocks mobile tier
+    autoUnlockMobileTier = true;
   }
   if (unlockedSkills.protocolEfficiency) {
     virusCostReduction += 0.15; // -15% virus costs (was +10% data generation)
