@@ -27,8 +27,8 @@ export function Applications({
         className="h-12 w-12"
         src="/folder.png"
         alt="App icon"
-        height={12}
-        width={12}
+        height={48}
+        width={48}
       />
       <span className="text-sm text-black">{title}</span>
     </div>
