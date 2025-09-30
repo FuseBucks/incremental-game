@@ -29,7 +29,6 @@ export interface SkillEffects {
   dataGenerationBonus: number;
   virusGenerationBonus: number;
   serverUpgradeCostReduction: number;
-  dataClickBonus: number;
   autoUnlockMobileTier: boolean;
   debuggingSpeedReduction: number;
   tierCostReduction: number;
@@ -47,7 +46,6 @@ export function calculateSkillEffects(
   let dataGenerationBonus = 0;
   let virusGenerationBonus = 0;
   let serverUpgradeCostReduction = 0;
-  let dataClickBonus = 0;
   let debuggingSpeedReduction = 0;
   let autoUnlockMobileTier = false;
   let tierCostReduction = 0;
