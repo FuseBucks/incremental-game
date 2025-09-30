@@ -6,22 +6,22 @@ export interface SkillCosts {
 
 export const SKILL_COSTS: SkillCosts = {
   // Worms Column - Earlier skills cost less
-  creepingSpawn: 0,
-  protocolEfficiency: 0,
-  bandwidthLeech: 0,
-  replicationSurge: 0,
+  creepingSpawn: 50,
+  protocolEfficiency: 150,
+  bandwidthLeech: 250,
+  replicationSurge: 400,
   
   // Trojan Column - Balanced costs
-  backdoorDividend: 0,
-  dormantCache: 0,
-  insideJob: 0,
-  stealthBuffer: 0,
+  backdoorDividend: 100,
+  dormantCache: 200,
+  insideJob: 350,
+  stealthBuffer: 500,
 
   // Spyware Column - Higher costs for powerful skills
-  dataCompression: 0,
-  silentHarvest: 0,
-  adaptiveSurveillance: 0,
-  packetJammer: 0,
+  dataCompression: 120,
+  silentHarvest: 300,
+  adaptiveSurveillance: 450,
+  packetJammer: 600,
 };
 
 export interface SkillEffects {
