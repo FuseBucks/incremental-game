@@ -27,6 +27,7 @@ export const SKILL_COSTS: SkillCosts = {
 export interface SkillEffects {
   virusCostReduction: number;
   dataGenerationBonus: number;
+  dataClickBonus: number;
   virusGenerationBonus: number;
   serverUpgradeCostReduction: number;
   autoUnlockMobileTier: boolean;
@@ -44,6 +45,7 @@ export function calculateSkillEffects(
 ): SkillEffects {
   let virusCostReduction = 0;
   let dataGenerationBonus = 0;
+  const dataClickBonus = 0;
   let virusGenerationBonus = 0;
   let serverUpgradeCostReduction = 0;
   let debuggingSpeedReduction = 0;
