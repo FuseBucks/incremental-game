@@ -1,4 +1,5 @@
 "use client";
+import { Analytics } from "@vercel/analytics/next";
 import { MainWindow } from "../components/MainWindow";
 import { Applications } from "../components/Applications";
 import { TaskBar } from "../components/TaskBar";
